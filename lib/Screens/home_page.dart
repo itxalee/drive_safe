@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     // Placemark place = placemarks[0];
 
     // To Get Time When location updates
-    currentTime = position.timestamp!.toString();
+    currentTime = position.timestamp!.toLocal().toString();
 
     setState(() {
       currentposition = position;
@@ -117,9 +117,9 @@ class _HomePageState extends State<HomePage> {
   //   int result = await audioPlayer.stop();
   // }
   @override
-  void setState(VoidCallback fn) {
+  void setState(VoidCallback fn) async {
     super.setState(fn);
-    getSpeed();
+    await getSpeed();
   }
 
   @override
