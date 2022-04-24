@@ -38,10 +38,11 @@ class _HomePageState extends State<HomePage> {
     cache = AudioCache(fixedPlayer: player);
   }
 
-  //---L0cation---
+  //---L0cation Permisssions---
   var currentposition;
-  var currentAddress;
+  var currentAddress = '';
   var Speed = '0.0';
+  var currentTime = '';
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -72,22 +73,29 @@ class _HomePageState extends State<HomePage> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
+    return position;
+  }
 
-      Placemark place = placemarks[0];
+// -------------- GETTING SPEED------------
 
-      setState(() {
-        currentposition = position;
-        currentAddress =
-            "${place.street},${place.subLocality},${place.locality}";
-        Speed = position.speed.toStringAsPrecision(2);
-      });
-    } catch (e) {
-      print(e);
-    }
-    return currentposition;
+  Future<void> getSpeed() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    // List<Placemark> placemarks =
+    //     await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    // Placemark place = placemarks[0];
+
+    // To Get Time When location updates
+    currentTime = position.timestamp!.toString();
+
+    setState(() {
+      currentposition = position;
+      // currentAddress = "${place.street},${place.subLocality},${place.locality}";
+      currentAddress =
+          position.latitude.toString() + ' , ' + position.longitude.toString();
+      Speed = position.speed.toStringAsPrecision(2);
+    });
   }
 
   //---ALARM ---
@@ -111,7 +119,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
-    _determinePosition();
+    getSpeed();
   }
 
   @override
@@ -210,19 +218,23 @@ class _HomePageState extends State<HomePage> {
 
           Text(
             "You Blinked " + blink.toString() + " Times",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
           Text(
             "yawn: " + yawnCounter.toString(),
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
           Text(
             'Speed: ' + Speed,
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
           Text(
             // isSleep.toString(),
-            'Location: ' + currentAddress.toString(),
+            'Location: ' + currentAddress,
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          Text(
+            'Time : ' + currentTime,
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
         ],
