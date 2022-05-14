@@ -3,4 +3,6 @@ import 'package:flutter/material.dart';
 // const kBackgroundColor =Color(0XFFE5E5E5);
 
 const kPrimaryColor = Color(0XFF27445C);
-const kBackgroundColor =Color(0XFFE5E5E5);
+const kBackgroundColor = Color(0XFFE5E5E5);
+
+late String vehicleName;

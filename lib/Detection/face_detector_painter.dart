@@ -56,7 +56,7 @@ class FaceDetectorPainter extends CustomPainter {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0
-      ..color = Colors.red;
+      ..color = Colors.green;
 
     for (final Face face in faces) {
       canvas.drawRect(
@@ -92,7 +92,6 @@ class FaceDetectorPainter extends CustomPainter {
       paintContour(FaceContourType.upperLipBottom);
       paintContour(FaceContourType.lowerLipTop);
       paintContour(FaceContourType.lowerLipBottom);
-
       // eyesOpenClose =
       //     (face.leftEyeOpenProbability! + face.rightEyeOpenProbability!) / 2;
       // if (eyesOpenClose < 0.1) {

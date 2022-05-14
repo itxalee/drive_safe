@@ -2,17 +2,20 @@
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:drive_safe/Detection/camera.dart';
+import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
 import 'package:drive_safe/Detection/face_detector_painter.dart';
-import '../Methods/speed.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+
+var Speed = '0.0';
 
 class HomePage extends StatefulWidget {
   final VoidCallback openDrawer;
   const HomePage({required this.openDrawer});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -41,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   //---L0cation Permisssions---
   var currentposition;
   var currentAddress = '';
-  var Speed = '0.0';
+
   var currentTime = '';
 
   Future<Position> _determinePosition() async {
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       // currentAddress = "${place.street},${place.subLocality},${place.locality}";
       currentAddress =
           position.latitude.toString() + ' , ' + position.longitude.toString();
-      Speed = position.speed.toStringAsPrecision(2);
+      Speed = (position.speed * 3.6).toStringAsPrecision(2);
     });
   }
 
@@ -153,18 +156,18 @@ class _HomePageState extends State<HomePage> {
     //     : null;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Center(
           child: Text(
             "Drive Safe",
             style: TextStyle(
-              color: Colors.white,
+              color: kBackgroundColor,
               fontSize: 24,
             ),
           ),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: kPrimaryColor,
         elevation: 0,
         leading: IconButton(
           onPressed: () {
@@ -177,36 +180,56 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 5,
+          ),
           Center(
             child: isFloatingPressed
-                ? CameraView(
-                    customPaint: customPaint,
-                    onImage: (inputImage) {
-                      processImage(inputImage);
-                    },
-                    initialDirection: CameraLensDirection.front,
-                  )
-                : Container(
-                    height: size.height / 1.5,
-                    width: size.width / 1.1,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.black26,
+                ? PhysicalModel(
+                    elevation: 5,
+                    //shadowColor: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                    color: kPrimaryColor.withOpacity(0.6),
+                    child: Container(
+                      height: size.height / 1.8,
+                      width: size.width / 1.1,
+                      child: CameraView(
+                        customPaint: customPaint,
+                        onImage: (inputImage) {
+                          processImage(inputImage);
+                        },
+                        initialDirection: CameraLensDirection.front,
+                      ),
                     ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.videocam,
-                            size: 80,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            "Press Start button to enable detection",
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ],
+                  )
+                : PhysicalModel(
+                    elevation: 5,
+                    //shadowColor: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                    color: kPrimaryColor.withOpacity(0.5),
+                    child: Container(
+                      height: size.height / 1.8,
+                      width: size.width / 1.1,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: kPrimaryColor.withOpacity(0.6),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.videocam,
+                              size: 80,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "Press Start button to enable detection",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -216,26 +239,141 @@ class _HomePageState extends State<HomePage> {
           //   style: TextStyle(color: Colors.white, fontSize: 20),
           // ),
 
-          Text(
-            "You Blinked " + blink.toString() + " Times",
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
-            "yawn: " + yawnCounter.toString(),
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
-            'Speed: ' + Speed,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
-            // isSleep.toString(),
-            'Location: ' + currentAddress,
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
-            'Time : ' + currentTime,
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 2),
+            alignment: Alignment.bottomLeft,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 90,
+                      width: 130,
+                      child: Card(
+                        color: Colors.yellow,
+                        margin: EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Blinks',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                            Text(
+                              blink.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 90,
+                      width: 130,
+                      child: Card(
+                        color: Colors.orange,
+                        margin: EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Yawn',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                            Text(
+                              yawnCounter.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 90,
+                      width: 130,
+                      child: Card(
+                        color: Colors.red,
+                        margin: EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Sleep',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                            Text(
+                              isSleep.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 90,
+                      width: 130,
+                      child: Card(
+                        color: Colors.green,
+                        margin: EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Speed',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                            Text(
+                              double.parse(Speed) > 10
+                                  ? Speed.toString()
+                                  : '0.0km/h',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Location:' + currentAddress),
+              ],
+            ),
           ),
         ],
       ),
@@ -262,12 +400,12 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 28,
                   ),
                 ),
-          onPressed: () {
+          onPressed: () async {
+            await _determinePosition();
             setState(() {
               isFloatingPressed = !isFloatingPressed;
               blink = 0;
               yawnCounter = 0;
-              _determinePosition();
             });
           },
         ),
@@ -275,7 +413,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black26,
+        color: kPrimaryColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
           child: Container(

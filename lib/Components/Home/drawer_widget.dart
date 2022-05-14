@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
+
 class DrawerWidget extends StatelessWidget {
   final ValueChanged<DrawerItem> onSelectedItem;
-  const DrawerWidget({
-    required this.onSelectedItem
-});
+  const DrawerWidget({required this.onSelectedItem});
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +11,15 @@ class DrawerWidget extends StatelessWidget {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 30,left: 10,right: 0),
+          padding: const EdgeInsets.only(top: 30, left: 10, right: 0),
           child: Container(
             width: 220,
             child: Column(
               children: [
                 CircleAvatar(
-                    backgroundImage:AssetImage('asset/images/profile.png',
-                ),
+                  backgroundImage: AssetImage(
+                    'asset/images/profile.png',
+                  ),
                   radius: 70,
                 ),
                 SizedBox(
@@ -42,45 +42,56 @@ class DrawerWidget extends StatelessWidget {
       ),
     );
   }
-  Widget buildDrawerItems(BuildContext context){
-    return Column(
-        children: DrawerItems.all
-            .map(
-              (item) => ListTile(
-                contentPadding: EdgeInsets.only(top: 8,bottom: 8,left: 5),
-                leading: Icon(item.icon,color: Colors.white,size: 30),
-                title: Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: (){
-                  onSelectedItem(item);
-                },
 
+  Widget buildDrawerItems(BuildContext context) {
+    return Column(
+      children: DrawerItems.all
+          .map(
+            (item) => ListTile(
+              contentPadding: EdgeInsets.only(top: 0, bottom: 0, left: 5),
+              leading: Icon(item.icon, color: Colors.white, size: 30),
+              title: Text(
+                item.title,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
-        ).toList(),
+              onTap: () {
+                onSelectedItem(item);
+              },
+            ),
+          )
+          .toList(),
     );
   }
 }
-class DrawerItem{
+
+class DrawerItem {
   final String title;
   final IconData icon;
   const DrawerItem({required this.title, required this.icon});
 }
-class DrawerItems{
+
+class DrawerItems {
   static const home = DrawerItem(title: "Home", icon: Icons.home);
-  static const profile = DrawerItem(title: "Profile", icon: Icons.account_circle);
+  static const profile =
+      DrawerItem(title: "Profile", icon: Icons.account_circle);
+  static const vehicle_reg =
+      DrawerItem(title: "Vehicle Registration", icon: Icons.commute);
+  static const speed_limit =
+      DrawerItem(title: "Set Speed Limit", icon: Icons.speed);
   static const summary = DrawerItem(title: "Summary", icon: Icons.summarize);
-  static const externalCamera = DrawerItem(title: "External Camera", icon: Icons.videocam);
+  static const externalCamera =
+      DrawerItem(title: "External Camera", icon: Icons.videocam);
   static const setting = DrawerItem(title: "Setting", icon: Icons.settings);
   static const logout = DrawerItem(title: "Log Out", icon: Icons.logout);
 
   static final List<DrawerItem> all = [
     home,
     profile,
+    vehicle_reg,
+    speed_limit,
     summary,
     externalCamera,
     setting,
