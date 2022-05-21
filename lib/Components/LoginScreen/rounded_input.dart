@@ -11,12 +11,14 @@ class RoundedInput extends StatelessWidget {
       {Key? key,
       required this.icon,
       required this.hint,
-      required this.controller})
+      required this.controller,
+      required this.inputType})
       : super(key: key);
 
   final IconData icon;
   final String hint;
   final TextEditingController controller;
+  final TextInputType inputType;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +31,7 @@ class RoundedInput extends StatelessWidget {
       child: TextField(
         controller: controller,
         cursorColor: kPrimaryColor,
-        keyboardType: TextInputType.emailAddress,
+        keyboardType: inputType,
         decoration: InputDecoration(
             icon: Icon(icon, color: kPrimaryColor),
             hintText: hint,

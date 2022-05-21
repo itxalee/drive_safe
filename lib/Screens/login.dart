@@ -8,6 +8,8 @@ import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+bool isLogin = true;
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -15,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  bool isLogin = true;
   late Animation<double> containerSize;
   late AnimationController animationController;
   Duration animationDuration = Duration(milliseconds: 270);
@@ -23,12 +24,18 @@ class _LoginScreenState extends State<LoginScreen>
   late final TextEditingController _name;
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final TextEditingController _conPassword;
+  late final TextEditingController _age;
+  late final TextEditingController _gender;
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
+    _conPassword = TextEditingController();
     _name = TextEditingController();
+    _age = TextEditingController();
+    _gender = TextEditingController();
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     animationController =
@@ -40,6 +47,10 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _name.dispose();
+    _conPassword.dispose();
+    _age.dispose();
+    _gender.dispose();
 
     animationController.dispose();
     super.dispose();
@@ -51,12 +62,14 @@ class _LoginScreenState extends State<LoginScreen>
     double viewInsets = MediaQuery.of(context).viewInsets.bottom;
     double defualtLoginSize = size.height - (size.height * 0.2);
     double defualtRegisterSize = size.height - (size.height * 0.1);
-    bool keyboard;
-    if (viewInsets == 0) {
-      keyboard = false;
-    } else {
-      keyboard = true;
-    }
+    bool keyboard = false;
+    setState(() {
+      if (viewInsets == 0) {
+        keyboard = false;
+      } else {
+        keyboard = true;
+      }
+    });
 
     containerSize = Tween<double>(
             begin: size.height * 0.1, end: defualtRegisterSize)
@@ -155,6 +168,7 @@ class _LoginScreenState extends State<LoginScreen>
                         icon: Icons.email,
                         hint: "Email",
                         controller: _email,
+                        inputType: TextInputType.emailAddress,
                       ),
                       RoundedPassword(text: "Password", controller: _password),
                       SizedBox(height: 20),
@@ -220,20 +234,39 @@ class _LoginScreenState extends State<LoginScreen>
                           icon: Icons.face,
                           hint: "Name",
                           controller: _name,
+                          inputType: TextInputType.name,
                         ),
                         RoundedInput(
-                            icon: Icons.email,
-                            hint: "Email",
-                            controller: _email),
+                          icon: Icons.date_range,
+                          hint: "Age",
+                          controller: _age,
+                          inputType: TextInputType.number,
+                        ),
+                        RoundedInput(
+                          icon: Icons.supervised_user_circle,
+                          hint: "Gender",
+                          controller: _gender,
+                          inputType: TextInputType.name,
+                        ),
+                        RoundedInput(
+                          icon: Icons.email,
+                          hint: "Email",
+                          controller: _email,
+                          inputType: TextInputType.emailAddress,
+                        ),
                         RoundedPassword(
                             text: "Password", controller: _password),
                         RoundedPassword(
-                            text: "Confirm Password", controller: _password),
+                            text: "Confirm Password", controller: _conPassword),
                         SizedBox(height: 20),
                         SignUpButton(
                           hint: "SIGN UP",
                           email: _email,
                           password: _password,
+                          name: _name,
+                          conPassword: _conPassword,
+                          age: _age,
+                          gender: _gender,
                         ),
                       ],
                     ),

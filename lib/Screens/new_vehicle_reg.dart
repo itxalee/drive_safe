@@ -1,12 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_safe/Components/LoginScreen/login_button.dart';
+import 'package:drive_safe/Methods/toast.dart';
+import 'package:drive_safe/cloud/cloud_data.dart';
+import 'package:drive_safe/cloud/firebase_cloud_storage.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 
 class VehicleRegistration extends StatefulWidget {
   final VoidCallback openDrawer;
   const VehicleRegistration({required this.openDrawer});
-
   @override
   State<VehicleRegistration> createState() => _VehicleRegistrationState();
 }
@@ -17,12 +21,16 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
   late final TextEditingController _vehModelController;
   late final TextEditingController _vehTypeController;
 
+  CloudData? _data;
+  late final FirebaseCloudStorage _dataServices;
+
   @override
   void initState() {
     _vehNameController = TextEditingController();
     _vehNumController = TextEditingController();
     _vehModelController = TextEditingController();
     _vehTypeController = TextEditingController();
+    _dataServices = FirebaseCloudStorage();
     super.initState();
   }
 
@@ -38,9 +46,7 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double viewInsets = MediaQuery.of(context).viewInsets.bottom;
     double defualtLoginSize = size.height - (size.height * 0.2);
-    double defualtRegisterSize = size.height - (size.height * 0.1);
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
@@ -59,7 +65,7 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
           onPressed: () {
             widget.openDrawer();
           },
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.arrow_back),
           color: Colors.white,
         ),
       ),
@@ -163,9 +169,14 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                 ),
                 InkWell(
                   onTap: () {
-                    // print('Speed Lmit is -------------' +
-                    //     _speedController.text.toString());
-                    setState(() {});
+                    setState(() async {
+                      createDoc();
+                      ShowToast("Vehicle Added");
+                      _vehModelController.clear();
+                      _vehNameController.clear();
+                      _vehNumController.clear();
+                      _vehTypeController.clear();
+                    });
                   },
                   borderRadius: BorderRadius.circular(30),
                   child: Container(
@@ -191,5 +202,23 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
         ),
       ),
     );
+  }
+
+  createDoc() {
+    var name = _vehNameController.text;
+    var numb = _vehNumController.text;
+    var model = _vehModelController.text;
+    var type = _vehTypeController.text;
+
+    DocumentReference doc =
+        FirebaseFirestore.instance.collection("vehicle_data").doc();
+    Map<String, dynamic> vehicles = {
+      "Vehicle Name": name,
+      "Vehicle Number": numb,
+      "Vehicle Model": model,
+      "Vehicle Type": type,
+      "id": currUid,
+    };
+    doc.set(vehicles).whenComplete(() => null);
   }
 }

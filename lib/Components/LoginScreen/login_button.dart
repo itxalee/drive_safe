@@ -3,12 +3,16 @@
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/Screens/admin_panel.dart';
 import 'package:drive_safe/Screens/main_page.dart';
+import 'package:drive_safe/Screens/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../firebase_options.dart';
+
+var currUid;
 
 class LoginButton extends StatelessWidget {
   const LoginButton(
@@ -29,6 +33,26 @@ class LoginButton extends StatelessWidget {
               .signInWithEmailAndPassword(
                   email: email.text, password: password.text);
 
+          FirebaseAuth.instance.authStateChanges().listen((User? user) {
+            if (user != null) {
+              currUid = user.uid;
+              print(currUid);
+            }
+          });
+
+          try {
+            profilePicURL = await FirebaseStorage.instance
+                .ref("profilePic/$currUid")
+                .getDownloadURL();
+          } on FirebaseException catch (e) {
+            print(e.code);
+            if (e.code == 'object-not-found') {
+              profilePicURL = await FirebaseStorage.instance
+                  .ref("profilePic/default.jpg")
+                  .getDownloadURL();
+            }
+          }
+
           if (User != null) {
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (_) => MainPage()));
@@ -38,23 +62,19 @@ class LoginButton extends StatelessWidget {
                 context, MaterialPageRoute(builder: (_) => Dashboard()));
           }
         } on FirebaseAuthException catch (e) {
-          print(e.code);
           if (e.code == 'unknown') {
             ShowToast('Input feilds cannot be empty');
-          }
-          if (e.code == 'wrong-password') {
+          } else if (e.code == 'wrong-password') {
             ShowToast('The email or password you entered is incorect');
-          }
-          if (e.code == 'invalid-email') {
+          } else if (e.code == 'invalid-email') {
             ShowToast('You entered an invalid email');
-          }
-          if (e.code == 'user-not-found') {
+          } else if (e.code == 'user-not-found') {
             ShowToast('User does not exist');
-          } else
-            ShowToast(e.code);
+          } else {
+            ShowToast(
+                "Somthing went wrong, Please check your internet connection");
+          }
         }
-
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Dashboard()));
       },
       borderRadius: BorderRadius.circular(30),
       child: Container(
