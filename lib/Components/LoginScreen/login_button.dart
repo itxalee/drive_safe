@@ -1,18 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:drive_safe/Methods/toast.dart';
-import 'package:drive_safe/Screens/admin_panel.dart';
+import 'package:drive_safe/Screens/admin_screen/admin_panel.dart';
 import 'package:drive_safe/Screens/main_page.dart';
 import 'package:drive_safe/Screens/profile.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../firebase_options.dart';
-
 var currUid;
+var docId;
 
 class LoginButton extends StatelessWidget {
   const LoginButton(
@@ -53,13 +51,11 @@ class LoginButton extends StatelessWidget {
             }
           }
 
-          if (User != null) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => MainPage()));
+          if (UserCredential.user!.uid == 'qjSKPVDyCYfttsWfSpvP0ZAoZKR2') {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => MainPage()));
-          }
-          if (UserCredential.user!.uid == 'GbQDkozG8FREwsGbWEymYMpcb142') {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => Dashboard()));
+                context, MaterialPageRoute(builder: (_) => AdminPanel()));
           }
         } on FirebaseAuthException catch (e) {
           if (e.code == 'unknown') {

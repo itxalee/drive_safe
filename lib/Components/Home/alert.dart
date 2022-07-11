@@ -10,7 +10,7 @@ class CustomAlertDialog extends StatelessWidget {
   final Function onNegativePressed;
   final double circularBorderRadius;
 
-  CustomAlertDialog({
+  const CustomAlertDialog({
     required this.title,
     required this.message,
     this.circularBorderRadius = 15.0,
@@ -19,8 +19,7 @@ class CustomAlertDialog extends StatelessWidget {
     required this.negativeBtnText,
     required this.onPostivePressed,
     required this.onNegativePressed,
-  })  : assert(bgColor != null),
-        assert(circularBorderRadius != null);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +32,17 @@ class CustomAlertDialog extends StatelessWidget {
       actions: <Widget>[
         MaterialButton(
           child: Text(negativeBtnText),
-          textColor: Theme.of(context).accentColor,
+          textColor: Theme.of(context).colorScheme.secondary,
           onPressed: () {
             Navigator.of(context).pop();
-            if (onNegativePressed != null) {
-              onNegativePressed();
-            }
+            onNegativePressed();
           },
         ),
         MaterialButton(
           child: Text(positiveBtnText),
-          textColor: Theme.of(context).accentColor,
+          textColor: Theme.of(context).colorScheme.secondary,
           onPressed: () {
-            if (onPostivePressed != null) {
-              onPostivePressed();
-            }
+            onPostivePressed();
           },
         ),
       ],

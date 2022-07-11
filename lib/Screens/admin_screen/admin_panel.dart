@@ -1,31 +1,27 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:drive_safe/Components/Home/drawer_widget.dart';
 import 'package:drive_safe/Methods/toast.dart';
+import 'package:drive_safe/Screens/admin_screen/admin_drawer.dart';
+import 'package:drive_safe/Screens/admin_screen/dashboard.dart';
 import 'package:drive_safe/Screens/login.dart';
 import 'package:drive_safe/Screens/profile.dart';
-import 'package:drive_safe/Screens/registered_vehicles.dart';
-import 'package:drive_safe/Screens/set_speed_limit.dart';
 import 'package:drive_safe/Screens/setting.dart';
-import 'package:drive_safe/Screens/new_vehicle_reg.dart';
 import 'package:drive_safe/Screens/summary.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
-
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class AdminPanel extends StatefulWidget {
+  const AdminPanel({Key? key}) : super(key: key);
   @override
-  _MainPageState createState() => _MainPageState();
+  _AdminPanelState createState() => _AdminPanelState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _AdminPanelState extends State<AdminPanel> {
   late double xOffSet;
   late double yOffSet;
   late double ScaleFactor;
   late bool isDrawerOpen;
-  DrawerItem item = DrawerItems.home;
+  AdminDrawerItem item = AdminDrawerItems.home;
 
   void openDrawer() {
     setState(() {
@@ -69,7 +65,7 @@ class _MainPageState extends State<MainPage> {
     return SafeArea(
         child: SizedBox(
       width: isDrawerOpen ? xOffSet : null,
-      child: DrawerWidget(
+      child: AdminDrawer(
         onSelectedItem: (item) {
           setState(() {
             this.item = item;
@@ -115,24 +111,24 @@ class _MainPageState extends State<MainPage> {
 
   Widget SwitchPages() {
     switch (item) {
-      case DrawerItems.logout:
+      case AdminDrawerItems.logout:
         return LoginScreen();
-      case DrawerItems.setting:
+      case AdminDrawerItems.setting:
         return Setting(openDrawer: openDrawer);
-      case DrawerItems.profile:
+      case AdminDrawerItems.profile:
         return Profile(openDrawer: openDrawer);
-      case DrawerItems.speed_limit:
-        return SetSpeedLimit(openDrawer: openDrawer);
-      case DrawerItems.addNewVehicle:
-        return VehicleRegistration(openDrawer: openDrawer);
-      case DrawerItems.vehicle_reg:
-        return RegisteredVehicles(openDrawer: openDrawer);
-      case DrawerItems.summary:
+      // case AdminDrawerItems.speed_limit:
+      //   return SetSpeedLimit(openDrawer: openDrawer);
+      // case AdminDrawerItems.addNewVehicle:
+      //   return VehicleRegistration(openDrawer: openDrawer);
+      // case AdminDrawerItems.vehicle_reg:
+      //   return RegisteredVehicles(openDrawer: openDrawer);
+      case AdminDrawerItems.summary:
         return Summary(openDrawer: openDrawer);
-      case DrawerItems.home:
-        return HomePage(openDrawer: openDrawer);
+      case AdminDrawerItems.home:
+        return Dashboard(openDrawer: openDrawer);
       default:
-        return HomePage(openDrawer: openDrawer);
+        return Dashboard(openDrawer: openDrawer);
     }
   }
 
@@ -141,7 +137,7 @@ class _MainPageState extends State<MainPage> {
       try {
         final UserCredential = await FirebaseAuth.instance.signOut();
         isLogin = true;
-        currVehicleName = '';
+
         ShowToast('Logged Out');
       } on FirebaseAuthException catch (e) {
         print(e.code);

@@ -12,7 +12,6 @@ class Storage {
     } on firebase_core.FirebaseException catch (e) {
       print(e);
     }
-    ;
   }
 
   Future<String> downloadURL(String imageName) async {

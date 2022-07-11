@@ -5,15 +5,15 @@ import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 
-class RegisteredVehicles extends StatefulWidget {
+class Summary extends StatefulWidget {
   final VoidCallback openDrawer;
-  const RegisteredVehicles({required this.openDrawer});
+  const Summary({required this.openDrawer});
 
   @override
-  State<RegisteredVehicles> createState() => _RegisteredVehiclesState();
+  State<Summary> createState() => _RegisteredVehiclesState();
 }
 
-class _RegisteredVehiclesState extends State<RegisteredVehicles> {
+class _RegisteredVehiclesState extends State<Summary> {
   @override
   void initState() {
     super.initState();
@@ -58,7 +58,7 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Registered Vehicles",
+                "Report of User",
                 style: TextStyle(
                   color: kPrimaryColor,
                   fontSize: 32,
@@ -66,7 +66,7 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                 ),
               ),
               Text(
-                "Press and hold to delete vehicles",
+                "Press and hold to delete the data",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -79,8 +79,8 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                 width: size.width,
                 child: StreamBuilder<QuerySnapshot>(
                   stream: db
-                      .collection('vehicle_data')
-                      .orderBy('Vehicle Name')
+                      .collection('captured_data')
+                      .orderBy('Time')
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -91,13 +91,16 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                             return Card(
                               child: currUid == ds['id']
                                   ? ListTile(
-                                      title: Text(ds['Vehicle Type'] +
-                                          ': ' +
-                                          ds['Vehicle Name']),
-                                      subtitle: Text('Registration Number: ' +
-                                          ds['Vehicle Number']),
+                                      title: Text('No. of blinks countted: ' +
+                                          ds['Blinks'].toString()),
+                                      subtitle: Text('No. of yawn countted: ' +
+                                          ds['Yawn'].toString()),
                                       onLongPress: () {
-                                        alert(ds);
+                                        delAlert(ds);
+                                      },
+                                      onTap: () {
+                                        docId = ds.id;
+                                        summaryDetails(ds);
                                       },
                                     )
                                   : null,
@@ -116,15 +119,15 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
     );
   }
 
-  alert(ds) async {
+  delAlert(ds) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text("Delete Vehicle"),
+              title: Text("Delete Record"),
               content: SingleChildScrollView(
-                child: Text("Are you sure you want to delete this vehicle"),
+                child: Text("Are you sure you want to delete this record?"),
               ),
               actions: [
                 MaterialButton(
@@ -141,6 +144,63 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                   child: Text("Yes"),
                 ),
               ]);
+        });
+  }
+
+  summaryDetails(ds) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Details"),
+            content: SizedBox(
+              height: 200.0,
+              width: 300.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Time: " + ds["Time"]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Location:  " + ds["Location"]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Vehicle Name: " + ds["Vehicle Name"]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Vehicle Numbere: " + ds["Vehicle Number"].toString()),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Vehicle Speed: " + ds["Vehicle Speed"].toString()),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Yawn: " + ds["Yawn"].toString()),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Blinks: " + ds["Blinks"].toString()),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Sleep: " + ds["Sleep"].toString()),
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancle"),
+              ),
+            ],
+          );
         });
   }
 }

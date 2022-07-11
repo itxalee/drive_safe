@@ -4,17 +4,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
-import 'package:drive_safe/cloud/firebase_cloud_storage.dart';
-import 'package:drive_safe/cloud/storage.dart';
 import 'package:drive_safe/constants.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../Methods/toast.dart';
 
 String profilePicURL = '';
 final db = FirebaseFirestore.instance;
@@ -271,8 +265,9 @@ class _ProfileState extends State<Profile> {
                             });
                       } else if (snapshot.hasError) {
                         return CircularProgressIndicator();
-                      } else
+                      } else {
                         return CircularProgressIndicator();
+                      }
                     },
                   ),
                 ),
@@ -290,12 +285,12 @@ class _ProfileState extends State<Profile> {
     var gender = _genderController.text;
     DocumentReference doc =
         FirebaseFirestore.instance.collection("user_info").doc(name);
-    Map<String, dynamic> user_info = {
+    Map<String, dynamic> userInfo = {
       "Name": name,
       "Ager": age,
       "Gender": gender,
     };
-    doc.set(user_info).whenComplete(() => null);
+    doc.set(userInfo).whenComplete(() => null);
   }
 
   Future<String> downloadURL() async {

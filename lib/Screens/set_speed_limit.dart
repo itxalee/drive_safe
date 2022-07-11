@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:drive_safe/Components/LoginScreen/rounded_input.dart';
-import 'package:drive_safe/Screens/home_page.dart';
+import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
+
+int speedLimit = 1000;
 
 class SetSpeedLimit extends StatefulWidget {
   final VoidCallback openDrawer;
@@ -109,7 +110,11 @@ class _SetSpeedLimitState extends State<SetSpeedLimit> {
               onTap: () {
                 print('Speed Lmit is -------------' +
                     _speedController.text.toString());
-                setState(() {});
+                setState(() {
+                  speedLimit = int.parse(_speedController.text);
+                  ShowToast('Speed Limit set to ' + speedLimit.toString());
+                  _speedController.clear();
+                });
               },
               borderRadius: BorderRadius.circular(30),
               child: Container(

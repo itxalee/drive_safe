@@ -3,14 +3,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/Methods/toast.dart';
-import 'package:drive_safe/Screens/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
-import '../../firebase_options.dart';
 
 class SignUpButton extends StatelessWidget {
   const SignUpButton(
@@ -55,8 +51,9 @@ class SignUpButton extends StatelessWidget {
             print(e.code);
             if (e.code == 'unknown') {
               ShowToast('Input feilds cannot be empty');
-            } else
+            } else {
               ShowToast(e.code);
+            }
           }
         }
       },
@@ -83,13 +80,13 @@ class SignUpButton extends StatelessWidget {
   createDoc(email, name, age, gender, id) {
     DocumentReference doc =
         FirebaseFirestore.instance.collection("user_info").doc(currUid);
-    Map<String, dynamic> user_info = {
+    Map<String, dynamic> userInfo = {
       "Name": name,
       "Email": email,
       "Age": age,
       "Gender": gender,
       "id": currUid,
     };
-    doc.set(user_info).whenComplete(() => null);
+    doc.set(userInfo).whenComplete(() => null);
   }
 }

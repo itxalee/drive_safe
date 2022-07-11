@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/Detection/camera.dart';
+import 'package:drive_safe/Methods/toast.dart';
+import 'package:drive_safe/Screens/profile.dart';
+import 'package:drive_safe/Screens/set_speed_limit.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -10,7 +15,14 @@ import 'package:drive_safe/Detection/face_detector_painter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
-var Speed = '0.0';
+var Speed = '0';
+bool isFloatingPressed = false;
+int isDetectionStopped = 0;
+String currVehicleName = '';
+String currVehicleNo = '';
+int sleepCounter = 0;
+var startPosition = '';
+var endPositin = '';
 
 class HomePage extends StatefulWidget {
   final VoidCallback openDrawer;
@@ -39,12 +51,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     player = AudioPlayer();
     cache = AudioCache(fixedPlayer: player);
+    _determinePosition();
   }
 
   //---L0cation Permisssions---
   var currentposition;
   var currentAddress = '';
-
   var currentTime = '';
 
   Future<Position> _determinePosition() async {
@@ -84,21 +96,23 @@ class _HomePageState extends State<HomePage> {
   Future<void> getSpeed() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    // List<Placemark> placemarks =
-    //     await placemarkFromCoordinates(position.latitude, position.longitude);
-
-    // Placemark place = placemarks[0];
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
 
     // To Get Time When location updates
     currentTime = position.timestamp!.toLocal().toString();
 
     setState(() {
       currentposition = position;
-      // currentAddress = "${place.street},${place.subLocality},${place.locality}";
+      //currentAddress = "${place.street},${place.subLocality},${place.locality}";
       currentAddress =
           position.latitude.toString() + ' , ' + position.longitude.toString();
       Speed = (position.speed * 3.6).toStringAsPrecision(2);
     });
+    if (!isFloatingPressed) {
+      startPosition = "${place.street},${place.subLocality},${place.locality}";
+    }
   }
 
   //---ALARM ---
@@ -136,7 +150,6 @@ class _HomePageState extends State<HomePage> {
 
   //END ALARM
 
-  bool isFloatingPressed = false;
   @override
   Widget build(BuildContext context) {
     //Future.delayed(Duration.zero, () => showAlert(context));
@@ -145,10 +158,15 @@ class _HomePageState extends State<HomePage> {
       playMusic();
     }
     if (isAlert == false) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         isSleep == true ? alert() : null;
+        double.parse(Speed) > speedLimit ? alert() : null;
       });
     }
+    if (double.parse(Speed) > speedLimit) {
+      playMusic();
+    }
+
     // isAlert == false
     //     ? WidgetsBinding.instance!.addPostFrameCallback((_) {
     //         isSleep == true ? alert() : null;
@@ -184,13 +202,13 @@ class _HomePageState extends State<HomePage> {
             height: 5,
           ),
           Center(
-            child: isFloatingPressed
+            child: isFloatingPressed && currVehicleName != ''
                 ? PhysicalModel(
                     elevation: 5,
                     //shadowColor: Colors.blue,
                     borderRadius: BorderRadius.circular(20),
                     color: kPrimaryColor.withOpacity(0.6),
-                    child: Container(
+                    child: SizedBox(
                       height: size.height / 1.8,
                       width: size.width / 1.1,
                       child: CameraView(
@@ -248,11 +266,12 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 90,
                       width: 130,
                       child: Card(
-                        color: Colors.yellow,
+                        elevation: 10,
+                        color: kBackgroundColor,
                         margin: EdgeInsets.all(10),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -261,14 +280,14 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Blinks',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
                             Text(
                               blink.toString(),
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30),
                             ),
@@ -276,11 +295,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: 90,
                       width: 130,
                       child: Card(
-                        color: Colors.orange,
+                        elevation: 10,
+                        color: kBackgroundColor,
                         margin: EdgeInsets.all(10),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -289,14 +309,14 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Yawn',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
                             Text(
                               yawnCounter.toString(),
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30),
                             ),
@@ -310,11 +330,12 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 90,
                       width: 130,
                       child: Card(
-                        color: Colors.red,
+                        elevation: 10,
+                        color: kBackgroundColor,
                         margin: EdgeInsets.all(10),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -323,14 +344,14 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Sleep',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
                             Text(
                               isSleep.toString(),
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
@@ -338,11 +359,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: 90,
                       width: 130,
                       child: Card(
-                        color: Colors.green,
+                        elevation: 10,
+                        color: kBackgroundColor,
                         margin: EdgeInsets.all(10),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -351,7 +373,7 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Speed',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
@@ -361,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                                   : '0.0km/h',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
@@ -379,7 +401,7 @@ class _HomePageState extends State<HomePage> {
       ),
 
       //Bottom Navigation Bar
-      floatingActionButton: Container(
+      floatingActionButton: SizedBox(
         width: 150,
         child: FloatingActionButton(
           backgroundColor:
@@ -401,11 +423,21 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
           onPressed: () async {
-            await _determinePosition();
             setState(() {
-              isFloatingPressed = !isFloatingPressed;
-              blink = 0;
-              yawnCounter = 0;
+              if (currVehicleName != '') {
+                isFloatingPressed = !isFloatingPressed;
+
+                if (!isFloatingPressed) {
+                  createDoc();
+                }
+
+                blink = 0;
+
+                yawnCounter = 0;
+                sleepCounter = 0;
+              } else {
+                selectVehicle();
+              }
             });
           },
         ),
@@ -416,7 +448,7 @@ class _HomePageState extends State<HomePage> {
         color: kPrimaryColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-          child: Container(
+          child: SizedBox(
             height: 70,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -440,7 +472,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      selectVehicle();
+                    });
+                  },
                   child: Column(
                     children: [
                       IconButton(
@@ -502,6 +538,92 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pop();
                   isAlert = false;
                   stopMusic();
+                  sleepCounter++;
+                },
+                child: Text("Cancle"),
+              ),
+            ],
+          );
+        });
+  }
+
+  createDoc() {
+    DocumentReference doc =
+        FirebaseFirestore.instance.collection("captured_data").doc();
+    Map<String, dynamic> capturedData = {
+      "Blinks": blink,
+      "Yawn": yawnCounter,
+      "Sleep": sleepCounter,
+      'Vehicle Name': currVehicleName,
+      'Vehicle Number': currVehicleNo,
+      "Vehicle Speed": Speed,
+      'Location': currentAddress,
+      'Time': currentTime,
+      "id": currUid,
+    };
+    doc.set(capturedData).whenComplete(() {
+      ShowToast('Data uploaded to cloud');
+    });
+  }
+
+  selectVehicle() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Select Vehicle"),
+            content: SizedBox(
+              height: 250.0,
+              width: 300.0,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: db
+                    .collection('vehicle_data')
+                    .orderBy('Vehicle Name')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        itemCount: (snapshot.data!).docs.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot ds = (snapshot.data!).docs[index];
+                          return Card(
+                            child: currUid == ds['id']
+                                ? ListTile(
+                                    title: Text(ds['Vehicle Type'] +
+                                        ': ' +
+                                        ds['Vehicle Name']),
+                                    subtitle: Text('Registration Number: ' +
+                                        ds['Vehicle Number']),
+                                    onTap: () {
+                                      setState(() {
+                                        currVehicleName = ds['Vehicle Name'];
+                                        currVehicleNo =
+                                            ds['Vehicle Number'].toString();
+                                        print(currVehicleName);
+                                        print(currVehicleNo.toString());
+                                        ShowToast('Vehicle ' +
+                                            ds['Vehicle Name'] +
+                                            'is selected');
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                  )
+                                : null,
+                          );
+                        });
+                  } else if (snapshot.hasError) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
                 child: Text("Cancle"),
               ),

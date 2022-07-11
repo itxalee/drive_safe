@@ -8,7 +8,7 @@ import '../main.dart';
 enum ScreenMode { liveFeed, gallery }
 
 class CameraView extends StatefulWidget {
-  CameraView(
+  const CameraView(
       {Key? key,
       required this.customPaint,
       required this.onImage,
@@ -56,7 +56,7 @@ class _CameraViewState extends State<CameraView> {
     if (_controller?.value.isInitialized == false) {
       return Container();
     }
-    return Container(
+    return SizedBox(
       height: size.height / 1.5,
       width: size.width / 1.1,
       child: ClipRRect(

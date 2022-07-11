@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/Screens/profile.dart';
-import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 
 String name = '';
@@ -20,7 +19,7 @@ class DrawerWidget extends StatelessWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 30, left: 10, right: 0),
-          child: Container(
+          child: SizedBox(
             width: 220,
             child: Column(
               children: [
@@ -59,9 +58,9 @@ class DrawerWidget extends StatelessWidget {
   }
 
   getName() async {
-    CollectionReference user_info = db.collection('user_info');
+    CollectionReference userInfo = db.collection('user_info');
     QuerySnapshot<Object?> snapshot =
-        await user_info.where(FieldPath.documentId, isEqualTo: currUid).get();
+        await userInfo.where(FieldPath.documentId, isEqualTo: currUid).get();
     var data = snapshot.docs[0];
     name = data['Name'];
 
@@ -123,6 +122,16 @@ class DrawerItems {
     summary,
     externalCamera,
     setting,
+    logout,
+  ];
+}
+
+class AdminDrawerItems {
+  static const dashboard = DrawerItem(title: "Dashboard", icon: Icons.home);
+  static const logout = DrawerItem(title: "Logout", icon: Icons.logout);
+
+  static final List<DrawerItem> all = [
+    dashboard,
     logout,
   ];
 }
