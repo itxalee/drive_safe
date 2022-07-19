@@ -133,6 +133,7 @@ class _HomePageState extends State<HomePage> {
   // stopMusic() async {
   //   int result = await audioPlayer.stop();
   // }
+
   @override
   void setState(VoidCallback fn) async {
     super.setState(fn);
@@ -393,7 +394,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                Text('Location:' + currentAddress),
               ],
             ),
           ),
@@ -454,18 +454,22 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    dark();
+                  },
                   child: Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          dark();
+                        },
                         icon: Icon(
-                          Icons.remove_red_eye,
+                          Icons.dark_mode,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        "Preview",
+                        "Screen Off",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ],
@@ -474,20 +478,23 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      selectVehicle();
+                      //selectVehicle();
+                      ShowToast(userName + userAge);
                     });
                   },
                   child: Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          selectVehicle();
+                        },
                         icon: Icon(
                           Icons.add_to_home_screen,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        "Pop Up",
+                        "Select Vehicle",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ],
@@ -551,6 +558,8 @@ class _HomePageState extends State<HomePage> {
     DocumentReference doc =
         FirebaseFirestore.instance.collection("captured_data").doc();
     Map<String, dynamic> capturedData = {
+      "Name": userName,
+      "Age": userAge,
       "Blinks": blink,
       "Yawn": yawnCounter,
       "Sleep": sleepCounter,
@@ -639,5 +648,43 @@ class _HomePageState extends State<HomePage> {
 
   stopMusic() {
     player.pause();
+  }
+
+  dark() {
+    return showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Colors.black45,
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation,
+            Animation secondaryAnimation) {
+          return Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.all(20),
+              color: Colors.black,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Exit",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

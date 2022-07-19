@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_new
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Methods/toast.dart';
+import 'package:drive_safe/Screens/admin_screen/pie_chart/data/pie_data.dart';
+import 'package:drive_safe/Screens/admin_screen/pie_chart/page/pie_chart_page.dart';
 import 'package:drive_safe/Screens/profile.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,8 @@ import 'package:flutter/material.dart';
 
 var totalUsers;
 var totalVehicels;
-var totalVehType;
+var totalVehType = 0;
+DataFromBackend obj = DataFromBackend();
 
 class Dashboard extends StatefulWidget {
   final VoidCallback openDrawer;
@@ -20,24 +23,39 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   getData() async {
-    setState(() {
-      try {
-        db.collection('user_info').get().then((value) {
-          totalUsers = value.size;
+    var veh = 'a';
+
+    try {
+      await db.collection('user_info').get().then((value) {
+        totalUsers = value.size;
+      });
+      await db.collection('vehicle_data').get().then((value) {
+        totalVehicels = value.size;
+      });
+
+      await db
+          .collection('vehicle_data')
+          .orderBy('Vehicle Name', descending: false)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          if (veh == doc["Vehicle Name"].toString()) {
+          } else {
+            veh = doc["Vehicle Name"].toString();
+            totalVehType++;
+          }
         });
-        db.collection('vehicle_data').get().then((value) {
-          totalVehicels = value.size;
-        });
-      } on FirebaseException catch (e) {
-        ShowToast(e.message.toString());
-      }
-    });
+      });
+    } on FirebaseException catch (e) {
+      ShowToast(e.message.toString());
+    }
   }
 
   @override
   void initState() {
     // WidgetsBinding.instance!.addPostFrameCallback((_) => getData());
     getData();
+    obj.get();
     super.initState();
   }
 
@@ -84,14 +102,18 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          totalUsers.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 40),
-                        ),
+                        totalUsers == null
+                            ? CircularProgressIndicator(
+                                backgroundColor: kPrimaryColor,
+                              )
+                            : Text(
+                                totalUsers.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 40),
+                              ),
                         Text(
                           'Registered Users',
                           textAlign: TextAlign.center,
@@ -115,14 +137,18 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          totalVehicels.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 40),
-                        ),
+                        totalVehicels == null
+                            ? CircularProgressIndicator(
+                                backgroundColor: kPrimaryColor,
+                              )
+                            : Text(
+                                totalVehicels.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 40),
+                              ),
                         Text(
                           'Registered Vehicles',
                           textAlign: TextAlign.center,
@@ -154,14 +180,18 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          totalUsers.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 40),
-                        ),
+                        totalVehType == 0
+                            ? CircularProgressIndicator(
+                                backgroundColor: kPrimaryColor,
+                              )
+                            : Text(
+                                totalVehType.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 40),
+                              ),
                         Text(
                           'Type of Vehicles',
                           textAlign: TextAlign.center,
@@ -206,6 +236,27 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ]),
+//Graph
+          SizedBox(
+            height: 320,
+            width: 300,
+            child: Card(
+              elevation: 10,
+              color: kBackgroundColor,
+              margin: EdgeInsets.all(10),
+              child: PieChartPage(),
+            ),
+          ),
+
+          GestureDetector(
+            child: Text("TAP"),
+            onTap: () {
+              obj.get();
+            },
+          ),
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );

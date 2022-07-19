@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:drive_safe/Components/Home/drawer_widget.dart';
+import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/Screens/login.dart';
 import 'package:drive_safe/Screens/profile.dart';
@@ -116,7 +117,7 @@ class _MainPageState extends State<MainPage> {
   Widget SwitchPages() {
     switch (item) {
       case DrawerItems.logout:
-        return LoginScreen();
+        return Logout();
       case DrawerItems.setting:
         return Setting(openDrawer: openDrawer);
       case DrawerItems.profile:
@@ -139,10 +140,20 @@ class _MainPageState extends State<MainPage> {
   Widget Logout() {
     Future<void> logout() async {
       try {
-        final UserCredential = await FirebaseAuth.instance.signOut();
+        await storage.delete(key: "token");
+        await storage.delete(key: "userCredential");
+        await storage.delete(key: "currentId");
+
         isLogin = true;
         currVehicleName = '';
         ShowToast('Logged Out');
+        final UserCredential =
+            await FirebaseAuth.instance.signOut().then((value) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => LoginScreen()),
+              (route) => false);
+        });
       } on FirebaseAuthException catch (e) {
         print(e.code);
         ShowToast(e.code);

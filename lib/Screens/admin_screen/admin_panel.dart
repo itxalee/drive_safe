@@ -1,14 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:drive_safe/Methods/toast.dart';
+import 'package:drive_safe/Screens/admin_screen/adminSummary.dart';
 import 'package:drive_safe/Screens/admin_screen/admin_drawer.dart';
 import 'package:drive_safe/Screens/admin_screen/dashboard.dart';
 import 'package:drive_safe/Screens/login.dart';
 import 'package:drive_safe/Screens/profile.dart';
 import 'package:drive_safe/Screens/setting.dart';
-import 'package:drive_safe/Screens/summary.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../Components/LoginScreen/login_button.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({Key? key}) : super(key: key);
@@ -112,7 +114,7 @@ class _AdminPanelState extends State<AdminPanel> {
   Widget SwitchPages() {
     switch (item) {
       case AdminDrawerItems.logout:
-        return LoginScreen();
+        return Logout();
       case AdminDrawerItems.setting:
         return Setting(openDrawer: openDrawer);
       case AdminDrawerItems.profile:
@@ -124,7 +126,7 @@ class _AdminPanelState extends State<AdminPanel> {
       // case AdminDrawerItems.vehicle_reg:
       //   return RegisteredVehicles(openDrawer: openDrawer);
       case AdminDrawerItems.summary:
-        return Summary(openDrawer: openDrawer);
+        return AdminSummary(openDrawer: openDrawer);
       case AdminDrawerItems.home:
         return Dashboard(openDrawer: openDrawer);
       default:
@@ -135,12 +137,15 @@ class _AdminPanelState extends State<AdminPanel> {
   Widget Logout() {
     Future<void> logout() async {
       try {
-        final UserCredential = await FirebaseAuth.instance.signOut();
-        isLogin = true;
-
-        ShowToast('Logged Out');
+        await storage.delete(key: "token");
+        await storage.delete(key: "userCredential");
+        await storage.delete(key: "currentId");
+        final UserCredential =
+            await FirebaseAuth.instance.signOut().then((value) {
+          ShowToast('Logged Out');
+          isLogin = true;
+        });
       } on FirebaseAuthException catch (e) {
-        print(e.code);
         ShowToast(e.code);
       }
     }

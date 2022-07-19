@@ -52,6 +52,9 @@ dependencies:
   firebase_storage: ^10.2.16
   file_picker: ^4.5.1
   syncfusion_flutter_charts: ^20.2.36
+  flutter_vlc_player: ^7.1.5
+  flutter_secure_storage: ^5.0.2
+  fl_chart: ^0.55.0
 
  
   
