@@ -77,32 +77,22 @@ class AdminDrawerItem {
 }
 
 class AdminDrawerItems {
-  static const home = AdminDrawerItem(title: "Home", icon: Icons.home);
-  static const profile =
-      AdminDrawerItem(title: "Profile", icon: Icons.account_circle);
-  // static const vehicle_reg =
-  //     AdminDrawerItem(title: "Registred Vehicles", icon: Icons.commute);
-  // static const addNewVehicle =
-  //     AdminDrawerItem(title: "Add New  Vehicle", icon: Icons.commute);
-  // static const speed_limit =
-  //     AdminDrawerItem(title: "Set Speed Limit", icon: Icons.speed);
+  static const home =
+      AdminDrawerItem(title: "Dashboard", icon: Icons.dashboard);
+  static const deleteUsers =
+      AdminDrawerItem(title: "Delete Users", icon: Icons.delete);
+
   static const summary =
       AdminDrawerItem(title: "Summary", icon: Icons.summarize);
-  // static const externalCamera =
-  //     AdminDrawerItem(title: "External Camera", icon: Icons.videocam);
-  static const setting =
-      AdminDrawerItem(title: "Setting", icon: Icons.settings);
+  static const pdfReport =
+      AdminDrawerItem(title: "PDF Report", icon: Icons.picture_as_pdf);
   static const logout = AdminDrawerItem(title: "Log Out", icon: Icons.logout);
 
   static final List<AdminDrawerItem> all = [
     home,
-    profile,
-    // vehicle_reg,
-    // addNewVehicle,
-    // speed_limit,
+    deleteUsers,
     summary,
-    //externalCamera,
-    setting,
+    pdfReport,
     logout,
   ];
 }

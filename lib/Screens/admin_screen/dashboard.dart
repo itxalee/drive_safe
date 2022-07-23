@@ -32,7 +32,7 @@ class _DashboardState extends State<Dashboard> {
       await db.collection('vehicle_data').get().then((value) {
         totalVehicels = value.size;
       });
-
+      totalVehType = 0;
       await db
           .collection('vehicle_data')
           .orderBy('Vehicle Name', descending: false)
@@ -54,6 +54,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     // WidgetsBinding.instance!.addPostFrameCallback((_) => getData());
+    PieData.data = [];
     getData();
     obj.get();
     super.initState();
@@ -65,6 +66,7 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Center(
           child: Text(
@@ -87,15 +89,29 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Admin Dashboard",
+            style: TextStyle(
+              fontSize: 42,
+              color: kPrimaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
           Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   height: 90,
-                  width: 150,
+                  width: 170,
                   child: Card(
-                    elevation: 10,
+                    elevation: 1,
                     color: kBackgroundColor,
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -128,9 +144,9 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 SizedBox(
                   height: 90,
-                  width: 150,
+                  width: 170,
                   child: Card(
-                    elevation: 10,
+                    elevation: 1,
                     color: kBackgroundColor,
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -171,9 +187,9 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 SizedBox(
                   height: 90,
-                  width: 150,
+                  width: 170,
                   child: Card(
-                    elevation: 10,
+                    elevation: 1,
                     color: kBackgroundColor,
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -206,9 +222,9 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 SizedBox(
                   height: 90,
-                  width: 150,
+                  width: 170,
                   child: Card(
-                    elevation: 10,
+                    elevation: 1,
                     color: kBackgroundColor,
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -236,26 +252,39 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ]),
-//Graph
           SizedBox(
-            height: 320,
-            width: 300,
+            height: 10,
+          ),
+          SizedBox(
+            width: 350,
             child: Card(
-              elevation: 10,
+              elevation: 1,
               color: kBackgroundColor,
-              margin: EdgeInsets.all(10),
-              child: PieChartPage(),
+              margin: EdgeInsets.fromLTRB(10, 0, 150, 0),
+              child: Text(
+                "   Sleep rate w.r.t age",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: kPrimaryColor,
+                    fontWeight: FontWeight.w500),
+              ),
             ),
           ),
 
-          GestureDetector(
-            child: Text("TAP"),
-            onTap: () {
-              obj.get();
-            },
-          ),
+//Graph
           SizedBox(
-            height: 20,
+            height: 350,
+            width: 350,
+            child: Card(
+              elevation: 1,
+              color: kBackgroundColor,
+              margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: PieChartPage(),
+              ),
+            ),
           ),
         ],
       ),

@@ -17,6 +17,8 @@ List<PieChartSectionData> getSections() => PieData.data
         color: data.color,
         value: data.sleep,
         title: '${data.sleep}',
+        showTitle: true,
+        radius: 60,
         //radius: radius,
         titleStyle: TextStyle(
           //fontSize: fontSize,

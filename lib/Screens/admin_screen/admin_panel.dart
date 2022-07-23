@@ -3,9 +3,10 @@ import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/Screens/admin_screen/adminSummary.dart';
 import 'package:drive_safe/Screens/admin_screen/admin_drawer.dart';
 import 'package:drive_safe/Screens/admin_screen/dashboard.dart';
+import 'package:drive_safe/Screens/admin_screen/delete_users.dart';
+import 'package:drive_safe/Screens/admin_screen/pdf_report/page/pdf_page.dart';
 import 'package:drive_safe/Screens/login.dart';
 import 'package:drive_safe/Screens/profile.dart';
-import 'package:drive_safe/Screens/setting.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -115,16 +116,11 @@ class _AdminPanelState extends State<AdminPanel> {
     switch (item) {
       case AdminDrawerItems.logout:
         return Logout();
-      case AdminDrawerItems.setting:
-        return Setting(openDrawer: openDrawer);
-      case AdminDrawerItems.profile:
-        return Profile(openDrawer: openDrawer);
-      // case AdminDrawerItems.speed_limit:
-      //   return SetSpeedLimit(openDrawer: openDrawer);
-      // case AdminDrawerItems.addNewVehicle:
-      //   return VehicleRegistration(openDrawer: openDrawer);
-      // case AdminDrawerItems.vehicle_reg:
-      //   return RegisteredVehicles(openDrawer: openDrawer);
+      case AdminDrawerItems.deleteUsers:
+        return DeleteUsers(openDrawer: openDrawer);
+      case AdminDrawerItems.pdfReport:
+        return PdfPage(openDrawer: openDrawer);
+
       case AdminDrawerItems.summary:
         return AdminSummary(openDrawer: openDrawer);
       case AdminDrawerItems.home:

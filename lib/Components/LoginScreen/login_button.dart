@@ -16,6 +16,7 @@ var docId;
 var userCredential;
 var userAge;
 var userName;
+var defaultPic;
 final storage = new FlutterSecureStorage();
 
 class LoginButton extends StatelessWidget {
@@ -47,6 +48,9 @@ class LoginButton extends StatelessWidget {
           try {
             profilePicURL = await FirebaseStorage.instance
                 .ref("profilePic/$currUid")
+                .getDownloadURL();
+            defaultPic = await FirebaseStorage.instance
+                .ref("profilePic/default.jpg")
                 .getDownloadURL();
           } on FirebaseException catch (e) {
             if (e.code == 'object-not-found') {

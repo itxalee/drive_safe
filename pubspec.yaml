@@ -55,6 +55,9 @@ dependencies:
   flutter_vlc_player: ^7.1.5
   flutter_secure_storage: ^5.0.2
   fl_chart: ^0.55.0
+  pdf: ^3.8.1
+  printing: ^5.9.1
+  open_file: ^3.2.1
 
  
   

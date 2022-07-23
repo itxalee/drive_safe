@@ -21,7 +21,7 @@ class PieChartPageState extends State {
                 PieChartData(
                   //pieTouchData: PieTouchData(),
                   borderData: FlBorderData(show: false),
-                  sectionsSpace: 5,
+                  sectionsSpace: 0,
                   centerSpaceRadius: 80,
                   sections: getSections(),
                 ),

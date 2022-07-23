@@ -31,27 +31,23 @@ class IndicatorsWidget extends StatelessWidget {
   }) =>
       Row(
         children: <Widget>[
-          int.parse(text) != 0
-              ? Container(
-                  width: size,
-                  height: size,
-                  decoration: BoxDecoration(
-                    shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
-                    color: color,
-                  ),
-                )
-              : Container(),
-          int.parse(text) != 0 ? const SizedBox(width: 5) : Container(),
-          int.parse(text) != 0
-              ? Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                )
-              : Container(),
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
+              color: color,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
         ],
       );
 }

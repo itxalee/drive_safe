@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-
 String profilePicURL = '';
 final db = FirebaseFirestore.instance;
 
@@ -138,6 +137,11 @@ class _ProfileState extends State<Profile> {
                                 ref.getDownloadURL().then((value) {
                                   setState(() {
                                     profilePicURL = value;
+
+                                    FirebaseFirestore.instance
+                                        .collection("user_info")
+                                        .doc(currUid)
+                                        .update({'profileURL': profilePicURL});
                                   });
                                 });
                               },
@@ -279,19 +283,19 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  createDoc() {
-    var name = _nameController.text;
-    var age = _ageController.text;
-    var gender = _genderController.text;
-    DocumentReference doc =
-        FirebaseFirestore.instance.collection("user_info").doc(name);
-    Map<String, dynamic> userInfo = {
-      "Name": name,
-      "Ager": age,
-      "Gender": gender,
-    };
-    doc.set(userInfo).whenComplete(() => null);
-  }
+  // createDoc() {
+  //   var name = _nameController.text;
+  //   var age = _ageController.text;
+  //   var gender = _genderController.text;
+  //   DocumentReference doc =
+  //       FirebaseFirestore.instance.collection("user_info").doc(name);
+  //   Map<String, dynamic> userInfo = {
+  //     "Name": name,
+  //     "Ager": age,
+  //     "Gender": gender,
+  //   };
+  //   doc.set(userInfo).whenComplete(() => null);
+  // }
 
   Future<String> downloadURL() async {
     String downloadURL = await FirebaseStorage.instance

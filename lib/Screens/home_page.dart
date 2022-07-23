@@ -479,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     setState(() {
                       //selectVehicle();
-                      ShowToast(userName + userAge);
+                      ShowToast(profilePicURL);
                     });
                   },
                   child: Column(

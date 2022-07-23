@@ -122,23 +122,73 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text("Delete Vehicle"),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              title: Center(
+                child: Text(
+                  "Delete Record",
+                  style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                ),
+              ),
               content: SingleChildScrollView(
-                child: Text("Are you sure you want to delete this vehicle"),
+                child: Text("Are you sure you want to delete this record?"),
               ),
               actions: [
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Cancel"),
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    ds.reference.delete();
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Yes"),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MaterialButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            width: 80,
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Colors.red,
+                            ),
+                            child: Text(
+                              "No",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        )),
+                    MaterialButton(
+                        onPressed: () {
+                          ds.reference.delete();
+                          Navigator.of(context).pop();
+                        },
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            width: 80,
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: kPrimaryColor,
+                            ),
+                            child: Text(
+                              "Yes",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        )),
+                  ],
                 ),
               ]);
         });

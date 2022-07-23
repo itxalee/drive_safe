@@ -86,6 +86,7 @@ class SignUpButton extends StatelessWidget {
       "Age": age,
       "Gender": gender,
       "id": currUid,
+      "profileURL": "profilePic/default.jpg"
     };
     doc.set(userInfo).whenComplete(() => null);
   }
