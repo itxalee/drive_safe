@@ -10,6 +10,8 @@ bool isSleep = false;
 double yawnProb = 0;
 int mouthOpen = 0;
 int yawnCounter = 0;
+int yawnWarn = 0;
+int blinksWarn = 0;
 
 double translateX(
     double x, InputImageRotation rotation, Size size, Size absoluteImageSize) {
@@ -123,6 +125,7 @@ class FaceDetectorPainter extends CustomPainter {
       }
       if (blinkCounter == 1) {
         blink++;
+        blinksWarn++;
       }
     } else {
       blinkCounter = 0;
@@ -135,6 +138,7 @@ class FaceDetectorPainter extends CustomPainter {
       mouthOpen++;
       if (mouthOpen == 10) {
         yawnCounter++;
+        yawnWarn++;
       }
     } else {
       mouthOpen = 0;

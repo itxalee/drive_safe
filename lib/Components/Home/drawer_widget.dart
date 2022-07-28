@@ -108,8 +108,7 @@ class DrawerItems {
   static const speed_limit =
       DrawerItem(title: "Set Speed Limit", icon: Icons.speed);
   static const summary = DrawerItem(title: "Summary", icon: Icons.summarize);
-  static const externalCamera =
-      DrawerItem(title: "External Camera", icon: Icons.videocam);
+
   static const setting = DrawerItem(title: "Setting", icon: Icons.settings);
   static const logout = DrawerItem(title: "Log Out", icon: Icons.logout);
 
@@ -120,7 +119,6 @@ class DrawerItems {
     addNewVehicle,
     speed_limit,
     summary,
-    externalCamera,
     setting,
     logout,
   ];

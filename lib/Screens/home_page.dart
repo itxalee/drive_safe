@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_element, unnecessary_const
+
+import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +9,7 @@ import 'package:drive_safe/Detection/camera.dart';
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/Screens/profile.dart';
 import 'package:drive_safe/Screens/set_speed_limit.dart';
+import 'package:drive_safe/Screens/setting.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -23,6 +26,9 @@ String currVehicleNo = '';
 int sleepCounter = 0;
 var startPosition = '';
 var endPositin = '';
+int warnningCounter = 0;
+
+var pressed = 0;
 
 class HomePage extends StatefulWidget {
   final VoidCallback openDrawer;
@@ -49,12 +55,56 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    getAgeName();
+
     player = AudioPlayer();
     cache = AudioCache(fixedPlayer: player);
     _determinePosition();
   }
 
-  //---L0cation Permisssions---
+  late Timer _yawntimer;
+  late Timer _blinktimer;
+  int yawnTimerVal = 15;
+  int blinkTimerVal = 60;
+
+  void startTimer() {
+    const yawnTimer = const Duration(minutes: 1);
+    const blinkTimer = const Duration(seconds: 1);
+    _yawntimer = Timer.periodic(
+      yawnTimer,
+      (Timer timer) {
+        if (yawnTimerVal == 0) {
+          setState(() {
+            yawnTimerVal = 15;
+            yawnWarn = 0;
+          });
+        } else {
+          setState(() {
+            yawnTimerVal--;
+          });
+        }
+      },
+    );
+
+    _blinktimer = Timer.periodic(
+      blinkTimer,
+      (Timer timer) {
+        if (blinkTimerVal == 0) {
+          setState(() {
+            blinkTimerVal = 60;
+            blinksWarn = 0;
+          });
+        } else {
+          setState(() {
+            blinkTimerVal--;
+          });
+        }
+      },
+    );
+  }
+
+  //---Location Permisssions---
   var currentposition;
   var currentAddress = '';
   var currentTime = '';
@@ -143,6 +193,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     faceDetector.close();
+    _blinktimer.cancel();
+    _yawntimer.cancel();
     super.dispose();
     // audioPlayer.release();
     // audioPlayer.dispose();
@@ -162,17 +214,23 @@ class _HomePageState extends State<HomePage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         isSleep == true ? alert() : null;
         double.parse(Speed) > speedLimit ? alert() : null;
+        if (yawnTimerVal > 0 && yawnWarn > 3 && yawnWarnStwich == true) {
+          yawnSoundStwich == true ? playMusic() : null;
+          return yawnAlert();
+        } else {
+          null;
+        }
+        if (blinkTimerVal == 0 && blinksWarn < 10 && blinkWarnSwitch == true) {
+          blinSoundSwitch == true ? playMusic() : null;
+          return blinkAlert();
+        } else {
+          null;
+        }
       });
     }
     if (double.parse(Speed) > speedLimit) {
       playMusic();
     }
-
-    // isAlert == false
-    //     ? WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //         isSleep == true ? alert() : null;
-    //       })
-    //     : null;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -343,18 +401,18 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              'Sleep',
+                              'Warnings',
                               style: TextStyle(
                                   color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
                             Text(
-                              isSleep.toString(),
+                              warnningCounter.toString(),
                               style: TextStyle(
                                   color: kPrimaryColor,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 28),
+                                  fontSize: 30),
                             ),
                           ],
                         ),
@@ -428,13 +486,23 @@ class _HomePageState extends State<HomePage> {
                 isFloatingPressed = !isFloatingPressed;
 
                 if (!isFloatingPressed) {
+                  _yawntimer.cancel();
+                  _blinktimer.cancel();
                   createDoc();
                 }
 
-                blink = 0;
+                if (isFloatingPressed) {
+                  startTimer();
+                }
 
+                blink = 0;
                 yawnCounter = 0;
                 sleepCounter = 0;
+                yawnWarn = 0;
+                yawnTimerVal = 15;
+                warnningCounter = 0;
+                blinksWarn = 0;
+                blinkTimerVal = 60;
               } else {
                 selectVehicle();
               }
@@ -476,12 +544,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      //selectVehicle();
-                      ShowToast(profilePicURL);
-                    });
-                  },
+                  onTap: () {},
                   child: Column(
                     children: [
                       IconButton(
@@ -542,12 +605,190 @@ class _HomePageState extends State<HomePage> {
             actions: [
               MaterialButton(
                 onPressed: () {
+                  setState(() {
+                    isAlert = false;
+                    stopMusic();
+                    sleepCounter++;
+                    warnningCounter++;
+                  });
+
                   Navigator.of(context).pop();
-                  isAlert = false;
-                  stopMusic();
-                  sleepCounter++;
                 },
                 child: Text("Cancle"),
+              ),
+            ],
+          );
+        });
+  }
+
+  yawnAlert() async {
+    isAlert = true;
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            title: Center(
+                child: Text(
+              "Excessive Yawning",
+              style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            )),
+            content: SingleChildScrollView(
+              child: Text(
+                  "You might be feeling Sleepy, \nPlese take some Rest and drink coffee"),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    isAlert = false;
+                    stopMusic();
+                    yawnWarn = 0;
+                    warnningCounter++;
+                    yawnTimerVal = 15;
+                  });
+
+                  Navigator.of(context).pop();
+                },
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    width: 100,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: kPrimaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  speedAlert() {
+    isAlert = true;
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            title: Center(
+                child: Text(
+              "Overspeeding Warnning",
+              style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            )),
+            content: SingleChildScrollView(
+              child: Text(
+                  "Your speed is greater than the speed limit, \n Slow Down"),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    isAlert = false;
+                    stopMusic();
+                    warnningCounter++;
+                  });
+
+                  Navigator.of(context).pop();
+                },
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    width: 100,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: kPrimaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  blinkAlert() {
+    isAlert = true;
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            title: Center(
+                child: Text(
+              "Drowssy Warnning",
+              style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            )),
+            content: SingleChildScrollView(
+              child: Text(
+                  "You might be feeling Sleepy, \n Plese take some sest and drink coffee"),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    isAlert = false;
+                    stopMusic();
+                    warnningCounter++;
+                    blinksWarn = 0;
+                    blinkTimerVal = 60;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    width: 100,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: kPrimaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           );
@@ -581,10 +822,19 @@ class _HomePageState extends State<HomePage> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Select Vehicle"),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            title: Center(
+                child: Text(
+              "Select Vehicle",
+              style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            )),
             content: SizedBox(
-              height: 250.0,
-              width: 300.0,
+              height: 250,
+              width: 300,
               child: StreamBuilder<QuerySnapshot>(
                 stream: db
                     .collection('vehicle_data')
@@ -630,11 +880,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             actions: [
-              MaterialButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("Cancle"),
+              Center(
+                child: MaterialButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                        width: 100,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: kPrimaryColor,
+                        ),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    )),
               ),
             ],
           );
@@ -642,12 +911,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future playMusic() async {
-    //cache.play('mp.mp3');
     await cache.loop('mp.mp3');
   }
 
   stopMusic() {
-    player.pause();
+    player.stop();
   }
 
   dark() {
@@ -686,5 +954,14 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         });
+  }
+
+  getAgeName() async {
+    CollectionReference userInfo = db.collection('user_info');
+    QuerySnapshot<Object?> snapshot =
+        await userInfo.where(FieldPath.documentId, isEqualTo: currUid).get();
+    var data = snapshot.docs[0];
+    userName = data['Name'];
+    userAge = data["Age"];
   }
 }

@@ -164,8 +164,10 @@ class _ProfileState extends State<Profile> {
                   height: defualtLoginSize,
                   width: size.width,
                   child: StreamBuilder<QuerySnapshot>(
-                    stream:
-                        db.collection('user_info').orderBy('Name').snapshots(),
+                    stream: db
+                        .collection('user_info')
+                        .where("id", isEqualTo: currUid)
+                        .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
@@ -177,26 +179,23 @@ class _ProfileState extends State<Profile> {
                               return Column(
                                 children: [
                                   Card(
-                                    child: currUid == ds['id']
-                                        ? ListTile(
-                                            leading: Icon(
-                                              Icons.account_circle,
-                                              size: 40,
-                                            ),
-                                            subtitle: Text(
-                                              ds['Name'],
-                                              style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            title: Text(
-                                              'Name',
-                                              style: TextStyle(
-                                                  color: Colors.black54),
-                                            ),
-                                          )
-                                        : null,
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.account_circle,
+                                        size: 40,
+                                      ),
+                                      subtitle: Text(
+                                        ds['Name'],
+                                        style: TextStyle(
+                                          color: kPrimaryColor,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        'Name',
+                                        style: TextStyle(color: Colors.black54),
+                                      ),
+                                    ),
                                   ),
                                   Card(
                                     child: currUid == ds['id']
