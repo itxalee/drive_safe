@@ -169,7 +169,7 @@ class _DeleteUsersState extends State<DeleteUsers> {
                   borderRadius: BorderRadius.all(Radius.circular(32.0))),
               title: Center(
                 child: Text(
-                  "Delete Record",
+                  "Delete User",
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontWeight: FontWeight.bold,

@@ -598,6 +598,8 @@ class _HomePageState extends State<HomePage> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
             title: Text("Sleep Alert"),
             content: SingleChildScrollView(
               child: Text("You Caught Sleeping, \n Take Some Rest"),
@@ -614,7 +616,25 @@ class _HomePageState extends State<HomePage> {
 
                   Navigator.of(context).pop();
                 },
-                child: Text("Cancle"),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    width: 100,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: kPrimaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           );

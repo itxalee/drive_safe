@@ -138,7 +138,7 @@ class _AdminPanelState extends State<AdminPanel> {
         await storage.delete(key: "currentId");
         final UserCredential =
             await FirebaseAuth.instance.signOut().then((value) {
-          ShowToast('Logged Out');
+          //ShowToast('Logged Out');
           isLogin = true;
         });
       } on FirebaseAuthException catch (e) {

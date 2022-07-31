@@ -108,13 +108,18 @@ class _SetSpeedLimitState extends State<SetSpeedLimit> {
             ),
             InkWell(
               onTap: () {
-                print('Speed Lmit is -------------' +
-                    _speedController.text.toString());
-                setState(() {
-                  speedLimit = int.parse(_speedController.text);
-                  ShowToast('Speed Limit set to ' + speedLimit.toString());
-                  _speedController.clear();
-                });
+                if (_speedController.text != "" &&
+                    int.parse(_speedController.text) > 10) {
+                  setState(() {
+                    speedLimit = int.parse(_speedController.text);
+                    ShowToast('Speed Limit set to ' + speedLimit.toString());
+                    _speedController.clear();
+                  });
+                } else if (int.parse(_speedController.text) < 10) {
+                  ShowToast("Speed Limit should be greater than 10");
+                } else {
+                  ShowToast("Plese Enter Speed Limit");
+                }
               },
               borderRadius: BorderRadius.circular(30),
               child: Container(

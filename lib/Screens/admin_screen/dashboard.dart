@@ -8,8 +8,9 @@ import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
-var totalUsers;
-var totalVehicels;
+var totalUsers = 0;
+var totalDataCaptured = 0;
+var totalVehicels = 0;
 var totalVehType = 0;
 DataFromBackend obj = DataFromBackend();
 
@@ -29,7 +30,8 @@ class _DashboardState extends State<Dashboard> {
       await db.collection('user_info').get().then((value) {
         totalUsers = value.size;
       });
-      await db.collection('vehicle_data').get().then((value) {
+      var totalvehsnap =
+          await db.collection('vehicle_data').get().then((value) {
         totalVehicels = value.size;
       });
       totalVehType = 0;
@@ -46,6 +48,11 @@ class _DashboardState extends State<Dashboard> {
           }
         });
       });
+      await db.collection('captured_data').get().then((value) {
+        setState(() {
+          totalDataCaptured = value.size;
+        });
+      });
     } on FirebaseException catch (e) {
       ShowToast(e.message.toString());
     }
@@ -54,6 +61,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     // WidgetsBinding.instance!.addPostFrameCallback((_) => getData());
+
     PieData.data = [];
     getData();
     obj.get();
@@ -100,6 +108,13 @@ class _DashboardState extends State<Dashboard> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          totalUsers == 0 || PieData.data == null
+              ? Container(
+                  alignment: Alignment.topCenter,
+                  margin: EdgeInsets.only(top: 20),
+                  child: CircularProgressIndicator())
+              : Container(),
+
           SizedBox(
             height: 10,
           ),
@@ -118,18 +133,14 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        totalUsers == null
-                            ? CircularProgressIndicator(
-                                backgroundColor: kPrimaryColor,
-                              )
-                            : Text(
-                                totalUsers.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 40),
-                              ),
+                        Text(
+                          totalUsers.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40),
+                        ),
                         Text(
                           'Registered Users',
                           textAlign: TextAlign.center,
@@ -153,18 +164,14 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        totalVehicels == null
-                            ? CircularProgressIndicator(
-                                backgroundColor: kPrimaryColor,
-                              )
-                            : Text(
-                                totalVehicels.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 40),
-                              ),
+                        Text(
+                          totalVehicels.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40),
+                        ),
                         Text(
                           'Registered Vehicles',
                           textAlign: TextAlign.center,
@@ -196,18 +203,14 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        totalVehType == 0
-                            ? CircularProgressIndicator(
-                                backgroundColor: kPrimaryColor,
-                              )
-                            : Text(
-                                totalVehType.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 40),
-                              ),
+                        Text(
+                          totalVehType.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40),
+                        ),
                         Text(
                           'Type of Vehicles',
                           textAlign: TextAlign.center,
@@ -232,15 +235,15 @@ class _DashboardState extends State<Dashboard> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          totalVehicels.toString(),
+                          totalDataCaptured.toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: kPrimaryColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 30),
+                              fontSize: 40),
                         ),
                         Text(
-                          'Number of Registered Vehicles',
+                          'Data Captured',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: kPrimaryColor,

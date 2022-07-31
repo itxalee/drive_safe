@@ -169,14 +169,21 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                 ),
                 InkWell(
                   onTap: () {
-                    setState(() async {
-                      createDoc();
-                      ShowToast("Vehicle Added");
-                      _vehModelController.clear();
-                      _vehNameController.clear();
-                      _vehNumController.clear();
-                      _vehTypeController.clear();
-                    });
+                    if (_vehModelController.text == "" &&
+                        _vehNameController.text == "" &&
+                        _vehNumController.text == "" &&
+                        _vehTypeController.text == "") {
+                      ShowToast("Fill out all feilds");
+                    } else {
+                      setState(() async {
+                        createDoc();
+                        ShowToast("Vehicle Added");
+                        _vehModelController.clear();
+                        _vehNameController.clear();
+                        _vehNumController.clear();
+                        _vehTypeController.clear();
+                      });
+                    }
                   },
                   borderRadius: BorderRadius.circular(30),
                   child: Container(

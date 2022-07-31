@@ -115,7 +115,6 @@ class _RegisteredVehiclesState extends State<Summary> {
                         ? db
                             .collection('captured_data')
                             .where('Vehicle Name', isEqualTo: vehicleNameFilter)
-                            .orderBy('Time')
                             .snapshots()
                         : db
                             .collection('captured_data')

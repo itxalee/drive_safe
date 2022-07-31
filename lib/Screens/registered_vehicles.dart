@@ -80,7 +80,7 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: db
                       .collection('vehicle_data')
-                      .orderBy('Vehicle Name')
+                      .where('id', isEqualTo: currUid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -89,18 +89,16 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                           itemBuilder: (context, index) {
                             DocumentSnapshot ds = (snapshot.data!).docs[index];
                             return Card(
-                              child: currUid == ds['id']
-                                  ? ListTile(
-                                      title: Text(ds['Vehicle Type'] +
-                                          ': ' +
-                                          ds['Vehicle Name']),
-                                      subtitle: Text('Registration Number: ' +
-                                          ds['Vehicle Number']),
-                                      onLongPress: () {
-                                        alert(ds);
-                                      },
-                                    )
-                                  : null,
+                              child: ListTile(
+                                title: Text(ds['Vehicle Type'] +
+                                    ': ' +
+                                    ds['Vehicle Name']),
+                                subtitle: Text('Registration Number: ' +
+                                    ds['Vehicle Number']),
+                                onLongPress: () {
+                                  alert(ds);
+                                },
+                              ),
                             );
                           });
                     } else if (snapshot.hasError) {
@@ -126,7 +124,7 @@ class _RegisteredVehiclesState extends State<RegisteredVehicles> {
                   borderRadius: BorderRadius.all(Radius.circular(32.0))),
               title: Center(
                 child: Text(
-                  "Delete Record",
+                  "Delete Vehicle",
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontWeight: FontWeight.bold,
