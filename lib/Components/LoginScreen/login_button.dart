@@ -17,6 +17,7 @@ var userCredential;
 var userAge;
 var userName;
 var defaultPic;
+bool noError = false;
 final storage = new FlutterSecureStorage();
 
 class LoginButton extends StatelessWidget {
@@ -34,10 +35,11 @@ class LoginButton extends StatelessWidget {
     return InkWell(
       onTap: () async {
         try {
+          showLoaderDialog(context);
           userCredential = await FirebaseAuth.instance
               .signInWithEmailAndPassword(
                   email: email.text, password: password.text);
-          storeTockenData(userCredential, "user");
+          storeTockenData("user");
           FirebaseAuth.instance.authStateChanges().listen((User? user) {
             if (user != null) {
               currUid = user.uid;
@@ -59,15 +61,17 @@ class LoginButton extends StatelessWidget {
                   .getDownloadURL();
             }
           }
+          Navigator.pop(context);
 
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => MainPage()));
           if (userCredential.user!.uid == 'qjSKPVDyCYfttsWfSpvP0ZAoZKR2') {
-            storeTockenData(userCredential, "admin");
+            storeTockenData("admin");
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (_) => AdminPanel()));
           }
         } on FirebaseAuthException catch (e) {
+          Navigator.pop(context);
           if (e.code == 'unknown') {
             ShowToast('Input feilds cannot be empty');
           } else if (e.code == 'wrong-password') {
@@ -102,11 +106,10 @@ class LoginButton extends StatelessWidget {
     );
   }
 
-  Future<void> storeTockenData(
-      UserCredential userCredential, String token) async {
-    await storage.write(key: "token", value: token);
-    await storage.write(
-        key: "userCredential", value: userCredential.toString());
+  Future<void> storeTockenData(String _token) async {
+    await storage.write(key: "token", value: _token);
+    // await storage.write(
+    //     key: "userCredential", value: userCredential.toString());
     await storage.write(key: "currentId", value: currUid.toString());
   }
 
@@ -117,5 +120,24 @@ class LoginButton extends StatelessWidget {
     var data = snapshot.docs[0];
     userName = data['Name'];
     userAge = data["Age"];
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+              margin: EdgeInsets.only(left: 7), child: Text("Please Wait...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

@@ -288,6 +288,7 @@ class _AdminSummaryState extends State<AdminSummary> {
                             color: kPrimaryColor.withAlpha(50),
                           ),
                           child: TextField(
+                            maxLength: 2,
                             controller: _minAgeController,
                             cursorColor: kPrimaryColor,
                             keyboardType: TextInputType.number,
@@ -302,6 +303,7 @@ class _AdminSummaryState extends State<AdminSummary> {
                             decoration: InputDecoration(
                               hintText: "Min",
                               border: InputBorder.none,
+                              counterText: '',
                             ),
                           ),
                         ),
@@ -327,6 +329,7 @@ class _AdminSummaryState extends State<AdminSummary> {
                             color: kPrimaryColor.withAlpha(50),
                           ),
                           child: TextField(
+                            maxLength: 2,
                             controller: _maxAgeController,
                             cursorColor: kPrimaryColor,
                             keyboardType: TextInputType.number,
@@ -340,6 +343,7 @@ class _AdminSummaryState extends State<AdminSummary> {
                             decoration: InputDecoration(
                               hintText: "Max",
                               border: InputBorder.none,
+                              counterText: '',
                             ),
                           ),
                         ),

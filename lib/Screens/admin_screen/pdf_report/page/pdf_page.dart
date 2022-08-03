@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_function_literals_in_foreach_calls, avoid_single_cascade_in_expression_statements
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_safe/Methods/toast.dart';
 
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
@@ -350,6 +351,7 @@ class _PdfPageState extends State<PdfPage> {
                         _minAgeController.clear();
                         _maxAgeController.clear();
                         _vehicleFilterController.clear();
+                        ShowToast("Filters are removed");
                       });
                     },
                     child: InkWell(

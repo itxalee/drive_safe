@@ -26,28 +26,30 @@ class SignUpButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        if (age.text == '' &&
-            gender.text == '' &&
-            name.text == '' &&
-            email.text == '' &&
+        if (age.text == '' ||
+            gender == '' ||
+            name.text == '' ||
+            email.text == '' ||
             password.text == '') {
           ShowToast("Fill out all feilds");
+        } else if (int.parse(age.text) < 17 || int.parse(age.text) > 99) {
+          ShowToast("Please Enter the correct age");
+        } else if (password.text != conPassword.text) {
+          ShowToast("Password and confirm passwords donot macth");
         } else {
           try {
+            showLoaderDialog(context);
             final UserCredential = await FirebaseAuth.instance
                 .createUserWithEmailAndPassword(
                     email: email.text, password: password.text)
                 .then((value) {
               currUid = FirebaseAuth.instance.currentUser!.uid;
+              createDoc(email.text, name.text, age.text, gender, currUid);
+              Navigator.pop(context);
+              ShowToast("Account Created");
             });
-
-            // FirebaseAuth.instance.authStateChanges().listen((User? user) {
-            //   currUid = user!.uid;
-            // });
-
-            createDoc(email.text, name.text, age.text, gender.text, currUid);
-            ShowToast("Account Created");
           } on FirebaseAuthException catch (e) {
+            Navigator.pop(context);
             print(e.code);
             if (e.code == 'unknown') {
               ShowToast('Input feilds cannot be empty');
@@ -89,5 +91,24 @@ class SignUpButton extends StatelessWidget {
       "profileURL": "profilePic/default.jpg"
     };
     doc.set(userInfo).whenComplete(() => null);
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+              margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

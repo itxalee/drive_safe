@@ -93,19 +93,6 @@ class FaceDetectorPainter extends CustomPainter {
       paintContour(FaceContourType.upperLipBottom);
       paintContour(FaceContourType.lowerLipTop);
       paintContour(FaceContourType.lowerLipBottom);
-      // eyesOpenClose =
-      //     (face.leftEyeOpenProbability! + face.rightEyeOpenProbability!) / 2;
-      // if (eyesOpenClose < 0.1) {
-      //   blink++;
-      // }
-
-      // yawnProb = face.smilingProbability!;
-      // if (yawnProb < 0.005) {
-      //   mouthOpen++;
-      //   if (mouthOpen == 1) {
-      //     yawnCounter++;
-      //   }
-      // }
     }
 
     //eyes closure detection
@@ -121,6 +108,7 @@ class FaceDetectorPainter extends CustomPainter {
     if (eyesProb < 0.1) {
       blinkCounter++;
       if (blinkCounter > 6) {
+        //2sec
         isSleep = true;
       }
       if (blinkCounter == 1) {
@@ -137,6 +125,7 @@ class FaceDetectorPainter extends CustomPainter {
     if (yawnProb < 0.009) {
       mouthOpen++;
       if (mouthOpen == 10) {
+        //4sec
         yawnCounter++;
         yawnWarn++;
       }

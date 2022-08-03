@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage> {
 
   late Timer _yawntimer;
   late Timer _blinktimer;
-  int yawnTimerVal = 15;
-  int blinkTimerVal = 60;
+  int yawnTimerVal = 15; //min
+  int blinkTimerVal = 60; //sec
 
   void startTimer() {
     const yawnTimer = const Duration(minutes: 1);
@@ -879,8 +879,7 @@ class _HomePageState extends State<HomePage> {
                                         currVehicleName = ds['Vehicle Name'];
                                         currVehicleNo =
                                             ds['Vehicle Number'].toString();
-                                        print(currVehicleName);
-                                        print(currVehicleNo.toString());
+
                                         ShowToast('Vehicle ' +
                                             ds['Vehicle Name'] +
                                             'is selected');

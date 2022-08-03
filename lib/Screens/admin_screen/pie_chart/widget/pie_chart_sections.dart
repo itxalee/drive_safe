@@ -9,10 +9,7 @@ PieData pieData = PieData();
 List<PieChartSectionData> getSections() => PieData.data
     .asMap()
     .map<int, PieChartSectionData>((index, data) {
-      //final isTouched = index == touchedIndex;
-      // final double fontSize = isTouched ? 25 : 16;
-      // final double radius = isTouched ? 100 : 80;
-
+      
       final value = PieChartSectionData(
         color: data.color,
         value: data.sleep,

@@ -152,67 +152,8 @@ class PdfInvoiceApi {
       headerDecoration: BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       tableWidth: pw.TableWidth.max,
-
-      // cellAlignments: {
-      //   0: Alignment.centerLeft,
-      //   1: Alignment.centerRight,
-      //   2: Alignment.centerRight,
-      //   3: Alignment.centerRight,
-      //   4: Alignment.centerRight,
-      //   5: Alignment.centerRight,
-      // },
     );
   }
-
-  // static Widget buildTotal(Invoice invoice) {
-  //   final netTotal = invoice.items
-  //       .map((item) => item.unitPrice * item.quantity)
-  //       .reduce((item1, item2) => item1 + item2);
-  //   final vatPercent = invoice.items.first.vat;
-  //   final vat = netTotal * vatPercent;
-  //   final total = netTotal + vat;
-
-  //   return Container(
-  //     alignment: Alignment.centerRight,
-  //     child: Row(
-  //       children: [
-  //         Spacer(flex: 6),
-  //         Expanded(
-  //           flex: 4,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               buildText(
-  //                 title: 'Net total',
-  //                 value: Utils.formatPrice(netTotal),
-  //                 unite: true,
-  //               ),
-  //               buildText(
-  //                 title: 'Vat ${vatPercent * 100} %',
-  //                 value: Utils.formatPrice(vat),
-  //                 unite: true,
-  //               ),
-  //               Divider(),
-  //               buildText(
-  //                 title: 'Total amount due',
-  //                 titleStyle: TextStyle(
-  //                   fontSize: 14,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 value: Utils.formatPrice(total),
-  //                 unite: true,
-  //               ),
-  //               SizedBox(height: 2 * PdfPageFormat.mm),
-  //               Container(height: 1, color: PdfColors.grey400),
-  //               SizedBox(height: 0.5 * PdfPageFormat.mm),
-  //               Container(height: 1, color: PdfColors.grey400),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   static Widget buildFooter(Invoice invoice) => Column(
         crossAxisAlignment: CrossAxisAlignment.center,

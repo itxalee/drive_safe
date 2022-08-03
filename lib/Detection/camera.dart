@@ -26,7 +26,6 @@ class CameraView extends StatefulWidget {
 class _CameraViewState extends State<CameraView> {
   CameraController? _controller;
   int _cameraIndex = 0;
-  double zoomLevel = 10, minZoomLevel = 10, maxZoomLevel = 10;
 
   @override
   void initState() {
@@ -37,6 +36,7 @@ class _CameraViewState extends State<CameraView> {
         _cameraIndex = i;
       }
     }
+
     _startLiveFeed();
   }
 

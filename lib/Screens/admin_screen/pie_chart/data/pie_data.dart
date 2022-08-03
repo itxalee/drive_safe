@@ -19,7 +19,7 @@ class Data {
 class DataFromBackend {
   void get() {
     PieData.data = [];
-    var i = 0;
+    var i = 0; 
     var catg1 = 0;
     var catg2 = 0;
     var catg3 = 0;

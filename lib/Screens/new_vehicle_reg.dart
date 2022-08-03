@@ -21,16 +21,12 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
   late final TextEditingController _vehModelController;
   late final TextEditingController _vehTypeController;
 
-  CloudData? _data;
-  late final FirebaseCloudStorage _dataServices;
-
   @override
   void initState() {
     _vehNameController = TextEditingController();
     _vehNumController = TextEditingController();
     _vehModelController = TextEditingController();
     _vehTypeController = TextEditingController();
-    _dataServices = FirebaseCloudStorage();
     super.initState();
   }
 
@@ -107,6 +103,7 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                     controller: _vehNameController,
                     cursorColor: kPrimaryColor,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                         icon: Icon(Icons.directions_car, color: kPrimaryColor),
                         hintText: 'Vehicle Name',
@@ -121,13 +118,15 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                     color: kPrimaryColor.withAlpha(50),
                   ),
                   child: TextField(
+                    maxLength: 4,
                     controller: _vehNumController,
                     cursorColor: kPrimaryColor,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         icon: Icon(Icons.pin, color: kPrimaryColor),
                         hintText: 'Vehicle Registration Number',
-                        border: InputBorder.none),
+                        border: InputBorder.none,
+                        counterText: ''),
                   ),
                 ),
                 Container(
@@ -139,12 +138,15 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                   ),
                   child: TextField(
                     controller: _vehModelController,
+                    maxLength: 4,
                     cursorColor: kPrimaryColor,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.calendar_month, color: kPrimaryColor),
-                        hintText: 'Vehicle Model',
-                        border: InputBorder.none),
+                      icon: Icon(Icons.calendar_month, color: kPrimaryColor),
+                      hintText: 'Vehicle Model',
+                      border: InputBorder.none,
+                      counterText: '',
+                    ),
                   ),
                 ),
                 Container(
@@ -158,6 +160,7 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                     controller: _vehTypeController,
                     cursorColor: kPrimaryColor,
                     keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                         icon: Icon(Icons.commute, color: kPrimaryColor),
                         hintText: 'Vehicle Type',
@@ -169,12 +172,17 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                 ),
                 InkWell(
                   onTap: () {
-                    if (_vehModelController.text == "" &&
-                        _vehNameController.text == "" &&
-                        _vehNumController.text == "" &&
-                        _vehTypeController.text == "") {
+                    if (_vehModelController.text == "" ||
+                        _vehNumController.text.length < 4 &&
+                            _vehNameController.text == "" &&
+                            _vehNumController.text == "" &&
+                            _vehTypeController.text == "") {
                       ShowToast("Fill out all feilds");
-                    } else {
+                    }
+                    // else if (_vehNumController.text.length < 4) {
+                    //   ShowToast("Vehcie number should be atleast 4 digits");
+                    // }
+                    else {
                       setState(() async {
                         createDoc();
                         ShowToast("Vehicle Added");

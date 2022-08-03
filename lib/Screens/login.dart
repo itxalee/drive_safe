@@ -24,18 +24,28 @@ class _LoginScreenState extends State<LoginScreen>
   late final TextEditingController _name;
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final TextEditingController _passwordR;
   late final TextEditingController _conPassword;
   late final TextEditingController _age;
-  late final TextEditingController _gender;
+//  late final TextEditingController _gender;
+  String? gender;
+
+  // List of items in our dropdown menu
+  var items = [
+    'Male',
+    'Female',
+    'Other',
+  ];
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
+    _passwordR = TextEditingController();
     _conPassword = TextEditingController();
     _name = TextEditingController();
     _age = TextEditingController();
-    _gender = TextEditingController();
+    //_gender = TextEditingController();
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     animationController =
@@ -50,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen>
     _name.dispose();
     _conPassword.dispose();
     _age.dispose();
-    _gender.dispose();
+    // _gender.dispose();
 
     animationController.dispose();
     super.dispose();
@@ -169,6 +179,7 @@ class _LoginScreenState extends State<LoginScreen>
                         hint: "Email",
                         controller: _email,
                         inputType: TextInputType.emailAddress,
+                        maxLen: 50,
                       ),
                       RoundedPassword(text: "Password", controller: _password),
                       SizedBox(height: 20),
@@ -235,38 +246,66 @@ class _LoginScreenState extends State<LoginScreen>
                           hint: "Name",
                           controller: _name,
                           inputType: TextInputType.name,
+                          maxLen: 30,
                         ),
                         RoundedInput(
                           icon: Icons.date_range,
                           hint: "Age",
                           controller: _age,
                           inputType: TextInputType.number,
+                          maxLen: 2,
                         ),
-                        RoundedInput(
-                          icon: Icons.supervised_user_circle,
-                          hint: "Gender",
-                          controller: _gender,
-                          inputType: TextInputType.name,
-                        ),
+                        //
+                        Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: kPrimaryColor.withAlpha(50),
+                            ),
+                            child: DropdownButtonFormField(
+                              hint: Text('Select Gender'),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.groups,
+                                    color: kPrimaryColor,
+                                  )),
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  gender = value as String?;
+                                });
+                              },
+                              value: gender,
+                            )),
                         RoundedInput(
                           icon: Icons.email,
                           hint: "Email",
                           controller: _email,
                           inputType: TextInputType.emailAddress,
+                          maxLen: 50,
                         ),
                         RoundedPassword(
-                            text: "Password", controller: _password),
+                            text: "Password", controller: _passwordR),
                         RoundedPassword(
                             text: "Confirm Password", controller: _conPassword),
                         SizedBox(height: 20),
                         SignUpButton(
                           hint: "SIGN UP",
                           email: _email,
-                          password: _password,
+                          password: _passwordR,
                           name: _name,
                           conPassword: _conPassword,
                           age: _age,
-                          gender: _gender,
+                          gender: gender,
                         ),
                       ],
                     ),

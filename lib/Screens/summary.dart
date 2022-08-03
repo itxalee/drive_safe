@@ -10,10 +10,10 @@ class Summary extends StatefulWidget {
   const Summary({required this.openDrawer});
 
   @override
-  State<Summary> createState() => _RegisteredVehiclesState();
+  State<Summary> createState() => _SummaryState();
 }
 
-class _RegisteredVehiclesState extends State<Summary> {
+class _SummaryState extends State<Summary> {
   String vehicleNameFilter = "";
   bool vehicleFilterApplied = false;
 
