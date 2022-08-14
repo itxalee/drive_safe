@@ -12,6 +12,7 @@ import 'package:drive_safe/Screens/set_speed_limit.dart';
 import 'package:drive_safe/Screens/setting.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:camera/camera.dart';
 import 'package:drive_safe/Detection/face_detector_painter.dart';
@@ -254,208 +255,210 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5,
-          ),
-          Center(
-            child: isFloatingPressed && currVehicleName != ''
-                ? PhysicalModel(
-                    elevation: 5,
-                    //shadowColor: Colors.blue,
-                    borderRadius: BorderRadius.circular(20),
-                    color: kPrimaryColor.withOpacity(0.6),
-                    child: SizedBox(
-                      height: size.height / 1.8,
-                      width: size.width / 1.1,
-                      child: CameraView(
-                        customPaint: customPaint,
-                        onImage: (inputImage) {
-                          processImage(inputImage);
-                        },
-                        initialDirection: CameraLensDirection.front,
-                      ),
-                    ),
-                  )
-                : PhysicalModel(
-                    elevation: 5,
-                    //shadowColor: Colors.blue,
-                    borderRadius: BorderRadius.circular(20),
-                    color: kPrimaryColor.withOpacity(0.5),
-                    child: Container(
-                      height: size.height / 1.8,
-                      width: size.width / 1.1,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: kPrimaryColor.withOpacity(0.6),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.videocam,
-                              size: 80,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "Press Start button to enable detection",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-          ),
-          // Text(
-          //   eyesOpenClose.toString(),
-          //   style: TextStyle(color: Colors.white, fontSize: 20),
-          // ),
-
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 2),
-            alignment: Alignment.bottomLeft,
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 90,
-                      width: 130,
-                      child: Card(
-                        elevation: 10,
-                        color: kBackgroundColor,
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Blinks',
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            Text(
-                              blink.toString(),
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 90,
-                      width: 130,
-                      child: Card(
-                        elevation: 10,
-                        color: kBackgroundColor,
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Yawn',
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            Text(
-                              yawnCounter.toString(),
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 90,
-                      width: 130,
-                      child: Card(
-                        elevation: 10,
-                        color: kBackgroundColor,
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Warnings',
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            Text(
-                              warnningCounter.toString(),
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 90,
-                      width: 130,
-                      child: Card(
-                        elevation: 10,
-                        color: kBackgroundColor,
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Speed',
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            Text(
-                              double.parse(Speed) > 10
-                                  ? Speed.toString()
-                                  : '0.0km/h',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 5,
             ),
-          ),
-        ],
+            Center(
+              child: isFloatingPressed && currVehicleName != ''
+                  ? PhysicalModel(
+                      elevation: 5,
+                      //shadowColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(20),
+                      color: kPrimaryColor.withOpacity(0.6),
+                      child: SizedBox(
+                        height: size.height / 1.8,
+                        width: size.width / 1.1,
+                        child: CameraView(
+                          customPaint: customPaint,
+                          onImage: (inputImage) {
+                            processImage(inputImage);
+                          },
+                          initialDirection: CameraLensDirection.front,
+                        ),
+                      ),
+                    )
+                  : PhysicalModel(
+                      elevation: 5,
+                      //shadowColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(20),
+                      color: kPrimaryColor.withOpacity(0.5),
+                      child: Container(
+                        height: size.height / 1.8,
+                        width: size.width / 1.1,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: kPrimaryColor.withOpacity(0.6),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.videocam,
+                                size: 80,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                "Press Start button to enable detection",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+            // Text(
+            //   eyesOpenClose.toString(),
+            //   style: TextStyle(color: Colors.white, fontSize: 20),
+            // ),
+
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 2),
+              alignment: Alignment.bottomLeft,
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 90,
+                        width: 130,
+                        child: Card(
+                          elevation: 10,
+                          color: kBackgroundColor,
+                          margin: EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Blinks',
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                              Text(
+                                blink.toString(),
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 90,
+                        width: 130,
+                        child: Card(
+                          elevation: 10,
+                          color: kBackgroundColor,
+                          margin: EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Yawn',
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                              Text(
+                                yawnCounter.toString(),
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 90,
+                        width: 130,
+                        child: Card(
+                          elevation: 10,
+                          color: kBackgroundColor,
+                          margin: EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Warnings',
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                              Text(
+                                warnningCounter.toString(),
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 90,
+                        width: 130,
+                        child: Card(
+                          elevation: 10,
+                          color: kBackgroundColor,
+                          margin: EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Speed',
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                              Text(
+                                double.parse(Speed) > 10
+                                    ? Speed.toString()
+                                    : '0.0km/h',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 28),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
 
       //Bottom Navigation Bar
@@ -858,7 +861,7 @@ class _HomePageState extends State<HomePage> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: db
                     .collection('vehicle_data')
-                    .orderBy('Vehicle Name')
+                    .where('id', isEqualTo: currUid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -867,33 +870,35 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           DocumentSnapshot ds = (snapshot.data!).docs[index];
                           return Card(
-                            child: currUid == ds['id']
-                                ? ListTile(
-                                    title: Text(ds['Vehicle Type'] +
-                                        ': ' +
-                                        ds['Vehicle Name']),
-                                    subtitle: Text('Registration Number: ' +
-                                        ds['Vehicle Number']),
-                                    onTap: () {
-                                      setState(() {
-                                        currVehicleName = ds['Vehicle Name'];
-                                        currVehicleNo =
-                                            ds['Vehicle Number'].toString();
+                            child: ListTile(
+                              title: Text(ds['Vehicle Type'] +
+                                  ': ' +
+                                  ds['Vehicle Name']),
+                              subtitle: Text('Registration Number: ' +
+                                  ds['Vehicle Number']),
+                              onTap: () {
+                                setState(() {
+                                  currVehicleName = ds['Vehicle Name'];
+                                  currVehicleNo =
+                                      ds['Vehicle Number'].toString();
 
-                                        ShowToast('Vehicle ' +
-                                            ds['Vehicle Name'] +
-                                            'is selected');
-                                        Navigator.of(context).pop();
-                                      });
-                                    },
-                                  )
-                                : null,
+                                  ShowToast('Vehicle ' +
+                                      ds['Vehicle Name'] +
+                                      'is selected');
+                                  Navigator.of(context).pop();
+                                });
+                              },
+                            ),
                           );
                         });
                   } else if (snapshot.hasError) {
-                    return CircularProgressIndicator();
+                    return SpinKitChasingDots(
+                      color: kPrimaryColor,
+                    );
                   } else {
-                    return CircularProgressIndicator();
+                    return SpinKitChasingDots(
+                      color: kPrimaryColor,
+                    );
                   }
                 },
               ),

@@ -6,6 +6,7 @@ import 'package:drive_safe/Screens/admin_screen/pie_chart/page/pie_chart_page.da
 import 'package:drive_safe/Screens/profile.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
 var totalUsers = 0;
@@ -108,11 +109,14 @@ class _DashboardState extends State<Dashboard> {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           totalUsers == 0 || PieData.data == null
               ? Container(
                   alignment: Alignment.topCenter,
                   margin: EdgeInsets.only(top: 20),
-                  child: CircularProgressIndicator())
+                  child: SpinKitChasingDots(
+                    color: kPrimaryColor,
+                  ))
               : Container(),
 
           SizedBox(

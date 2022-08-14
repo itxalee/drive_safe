@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
+import 'package:drive_safe/Methods/loading.dart';
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class SignUpButton extends StatelessWidget {
           ShowToast("Password and confirm passwords donot macth");
         } else {
           try {
-            showLoaderDialog(context);
+            showLoaderDialog(context, kPrimaryColor);
             final UserCredential = await FirebaseAuth.instance
                 .createUserWithEmailAndPassword(
                     email: email.text, password: password.text)
@@ -91,24 +92,5 @@ class SignUpButton extends StatelessWidget {
       "profileURL": "profilePic/default.jpg"
     };
     doc.set(userInfo).whenComplete(() => null);
-  }
-
-  showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-              margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }

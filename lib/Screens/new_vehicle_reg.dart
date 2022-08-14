@@ -2,10 +2,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
+import 'package:drive_safe/Methods/loading.dart';
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/cloud/cloud_data.dart';
 import 'package:drive_safe/cloud/firebase_cloud_storage.dart';
 import 'package:drive_safe/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class VehicleRegistration extends StatefulWidget {
@@ -184,7 +186,9 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
                     // }
                     else {
                       setState(() async {
+                        showLoaderDialog(context, kPrimaryColor);
                         createDoc();
+                        Navigator.pop(context);
                         ShowToast("Vehicle Added");
                         _vehModelController.clear();
                         _vehNameController.clear();

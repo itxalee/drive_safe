@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -267,9 +268,13 @@ class _ProfileState extends State<Profile> {
                               );
                             });
                       } else if (snapshot.hasError) {
-                        return CircularProgressIndicator();
+                        return SpinKitChasingDots(
+                          color: kPrimaryColor,
+                        );
                       } else {
-                        return CircularProgressIndicator();
+                        return SpinKitChasingDots(
+                          color: kPrimaryColor,
+                        );
                       }
                     },
                   ),

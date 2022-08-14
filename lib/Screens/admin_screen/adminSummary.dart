@@ -5,6 +5,7 @@ import 'package:drive_safe/Components/LoginScreen/login_button.dart';
 import 'package:drive_safe/Components/LoginScreen/rounded_input.dart';
 import 'package:drive_safe/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AdminSummary extends StatefulWidget {
   final VoidCallback openDrawer;
@@ -152,9 +153,13 @@ class _AdminSummaryState extends State<AdminSummary> {
                               ));
                             });
                       } else if (snapshot.hasError) {
-                        return CircularProgressIndicator();
+                        return SpinKitChasingDots(
+                          color: kPrimaryColor,
+                        );
                       } else {
-                        return CircularProgressIndicator();
+                        return SpinKitChasingDots(
+                          color: kPrimaryColor,
+                        );
                       }
                     },
                   ),

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_safe/Methods/loading.dart';
 import 'package:drive_safe/Methods/toast.dart';
 import 'package:drive_safe/Screens/admin_screen/admin_panel.dart';
 import 'package:drive_safe/Screens/main_page.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 var currUid;
 var docId;
@@ -35,7 +37,7 @@ class LoginButton extends StatelessWidget {
     return InkWell(
       onTap: () async {
         try {
-          showLoaderDialog(context);
+          showLoaderDialog(context, kBackgroundColor);
           userCredential = await FirebaseAuth.instance
               .signInWithEmailAndPassword(
                   email: email.text, password: password.text);
@@ -120,24 +122,5 @@ class LoginButton extends StatelessWidget {
     var data = snapshot.docs[0];
     userName = data['Name'];
     userAge = data["Age"];
-  }
-
-  showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-              margin: EdgeInsets.only(left: 7), child: Text("Please Wait...")),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }

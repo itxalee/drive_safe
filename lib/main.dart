@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:camera/camera.dart';
 
 import 'firebase_options.dart';
@@ -71,7 +71,35 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: kPrimaryColor,
       ),
-      home: currentScreen,
+      home: AnimatedSplashScreen(
+        nextScreen: currentScreen,
+        splash: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'asset/images/welcome_image.png',
+                height: 280,
+                width: 280,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Drive Safe",
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ]),
+        splashIconSize: 700,
+        centered: true,
+        animationDuration: const Duration(seconds: 1),
+        splashTransition: SplashTransition.fadeTransition,
+        backgroundColor: kBackgroundColor,
+      ),
     );
   }
 }
